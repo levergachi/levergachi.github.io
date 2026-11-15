@@ -357,9 +357,11 @@ function renderMy(){
     $("#impOk").addEventListener("click",function(){IMP.forEach(function(t){if(MEM.my.indexOf(t)<0)MEM.my.push(t)});IMP=[];save();renderMy()});
     $("#impNo").addEventListener("click",function(){IMP=[];renderMy()})}
   var tl=$("#mytools");
-  if(r.length){var link=location.origin+location.pathname+"#my="+MEM.my.join(",");
-    tl.innerHTML='<div class="note"><b>🔗 내 종목 링크</b><br><span class="mute">이 링크를 북마크하거나 카톡 나에게 보내 두면, 다른 폰이나 브라우저에서 열어 그대로 불러올 수 있어요.</span><input type="text" id="mylink" readonly value="'+esc(link)+'" style="margin:8px 0;font-size:14px"><button class="btn" id="mycopy">링크 복사</button><button class="btn ghost" id="mycmp">⚖ 담은 종목 비교</button></div>';
-    $("#mycopy").addEventListener("click",function(){var i=$("#mylink");i.select();var ok=false;try{if(navigator.clipboard){navigator.clipboard.writeText(link);ok=true}else ok=document.execCommand("copy")}catch(e){}$("#mycopy").textContent=ok?"복사했어요":"선택됐어요, 길게 눌러 복사"});
+  if(r.length){var link=location.origin+location.pathname+"#my="+MEM.my.join(","),tgcmd="관심 "+MEM.my.slice(0,20).join(", ");
+    tl.innerHTML='<div class="note"><b>🔗 내 종목 링크</b><br><span class="mute">이 링크를 북마크하거나 카톡 나에게 보내 두면, 다른 폰이나 브라우저에서 열어 그대로 불러올 수 있어요.</span><input type="text" id="mylink" readonly value="'+esc(link)+'" style="margin:8px 0;font-size:14px"><button class="btn" id="mycopy">링크 복사</button><button class="btn ghost" id="mycmp">⚖ 담은 종목 비교</button></div>'+
+     '<div class="note"><b>✈️ 텔레그램으로 알림 받기</b><br><span class="mute">아래 문장을 텔레그램 봇에 보내면 이 종목들이 봇의 관심 종목에 등록돼요. 평일 아침에 등급이 바뀐 종목과 3일 안 실적 발표를 알려 드려요(최대 20개). 봇 가입 방법은 <a href="https://open.kakao.com/o/gq92qKDi" target="_blank" rel="noopener">오픈채팅</a>에서 안내해요.</span><input type="text" id="tgcmd" readonly value="'+esc(tgcmd)+'" style="margin:8px 0;font-size:14px"><button class="btn" id="tgopen">문장 복사하고 봇 열기</button></div>';
+    $("#mycopy").addEventListener("click",function(){var i=$("#mylink");i.select();var ok=false;try{if(navigator.clipboard){navigator.clipboard.writeText(link).catch(function(){try{document.execCommand("copy")}catch(e){}});ok=true}else ok=document.execCommand("copy")}catch(e){}$("#mycopy").textContent=ok?"복사했어요":"선택됐어요, 길게 눌러 복사"});
+    $("#tgopen").addEventListener("click",function(){var i=$("#tgcmd");i.select();try{if(navigator.clipboard)navigator.clipboard.writeText(tgcmd).catch(function(){try{document.execCommand("copy")}catch(e){}});else document.execCommand("copy")}catch(e){}$("#tgopen").textContent="복사했어요 · 봇 대화창에 붙여 넣어 보내세요";window.open("https://t.me/lever_stock_bot?start=web","_blank","noopener")});
     $("#mycmp").addEventListener("click",function(){var a=MEM.my.slice(0,4);PL=a.slice().reverse();PL=a;CK={};openStock(a[0]);if(PL.length>=2){CMPV=true;try{history.pushState({pl:PL.slice(),cmp:1},"","#s="+PL.join(","))}catch(e){}renderPanel()}})}
   else tl.innerHTML="";
 }
