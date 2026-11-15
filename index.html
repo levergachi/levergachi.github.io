@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>레버가치 저점반전 신호</title>
+<meta name="description" content="좋은 회사가 억울하게 싸졌다가 다시 오르기 시작하는 순간을 찾아 알려 주는 무료 봇. 틀린 신호까지 그대로 공개합니다.">
+<meta property="og:title" content="레버가치 저점반전 신호">
+<meta property="og:description" content="싸졌고, 회사가 튼튼하고, 다시 오르기 시작한 종목만. 틀린 신호까지 그대로 공개해요.">
+<meta property="og:type" content="website">
+<style>
+:root{--bg:#f6f7f9;--card:#fff;--ink:#17202a;--mute:#667085;--line:#e4e7ec;--brand:#0f766e;--brand-ink:#fff;--up:#c2410c;--dn:#1d4ed8;--ok:#15803d;--warn:#b45309;--bad:#b42318;--chip:#eef2f6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1418;--card:#171e24;--ink:#e8edf2;--mute:#9aa7b3;--line:#27313a;--brand:#2dd4bf;--brand-ink:#052e2b;--up:#fb923c;--dn:#60a5fa;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--chip:#1f2830}}
+:root[data-theme="dark"]{--bg:#0f1418;--card:#171e24;--ink:#e8edf2;--mute:#9aa7b3;--line:#27313a;--brand:#2dd4bf;--brand-ink:#052e2b;--up:#fb923c;--dn:#60a5fa;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--chip:#1f2830}
+*{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
+.wrap{max-width:760px;margin:0 auto;padding:0 16px 72px}
+header{padding:28px 0 8px}
+h1{font-size:24px;line-height:1.3;margin:0 0 6px}
+.sub{color:var(--mute);margin:0}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;padding:10px 0;border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{flex:1 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:999px;font:inherit;font-size:15px;cursor:pointer;white-space:nowrap}
+nav button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
+section{display:none;padding-top:16px}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
+.card h2{font-size:17px;margin:0 0 8px}
+.mute{color:var(--mute);font-size:14px}
+.big{font-size:34px;font-weight:700;line-height:1.1}
+.row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1 1 140px}
+.stat{background:var(--chip);border-radius:12px;padding:12px}
+.stat b{display:block;font-size:22px}
+.stat span{font-size:13px;color:var(--mute)}
+.pos{color:var(--up)}.neg{color:var(--dn)}
+.chip{display:inline-block;background:var(--chip);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
+.btn{display:inline-block;background:var(--brand);color:var(--brand-ink);text-decoration:none;padding:12px 20px;border-radius:12px;font-weight:700;border:0;font:inherit;font-weight:700;cursor:pointer}
+.btn.ghost{background:var(--chip);color:var(--ink)}
+input[type=search]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:17px}
+.res{list-style:none;margin:10px 0 0;padding:0}
+.res li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 8px;cursor:pointer;display:flex;gap:10px;align-items:center}
+.res li .nm{flex:1}.res li small{display:block;color:var(--mute)}
+.cond{display:grid;gap:8px;margin:10px 0}
+.cond div{display:flex;gap:10px;align-items:flex-start;background:var(--chip);border-radius:10px;padding:10px 12px}
+.cond em{font-style:normal;font-size:14px;color:var(--mute);display:block}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
+#ledger td:nth-child(3),#ledger th:nth-child(3),#ledger td:nth-child(4),#ledger td:nth-child(5),#ledger td:first-child{white-space:nowrap}
+th{color:var(--mute);font-weight:600;font-size:13px}td.r,th.r{text-align:right}
+.gauge{width:100%;max-width:300px;display:block;margin:4px auto 0}
+.bar{height:8px;border-radius:99px;background:var(--chip);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--brand)}
+footer{margin-top:28px;color:var(--mute);font-size:13px}
+.note{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:14px;margin:10px 0}
+details summary{cursor:pointer;color:var(--brand);margin-top:8px}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+<h1>레버가치 저점반전 신호</h1>
+<p class="sub">싸졌고, 회사가 튼튼하고, 다시 오르기 시작한 종목만 골라 알려 주는 무료 봇이에요. 맞은 신호도 틀린 신호도 그대로 공개해요.</p>
+</header>
+<nav role="tablist" aria-label="메뉴">
+<button role="tab" aria-selected="true" data-t="today">오늘</button>
+<button role="tab" aria-selected="false" data-t="find">종목 찾기</button>
+<button role="tab" aria-selected="false" data-t="score">성적표</button>
+<button role="tab" aria-selected="false" data-t="start">시작하기</button>
+</nav>
+
+<section id="today" class="on">
+<div class="card" id="weather"><h2>시장 날씨</h2><p class="mute">불러오는 중…</p></div>
+<div class="card" id="sigs"><h2>지금 신호가 켜진 종목</h2><p class="mute">불러오는 중…</p></div>
+<div class="card" id="near"><h2>문턱까지 온 종목</h2><p class="mute">불러오는 중…</p></div>
+<div class="card"><h2>이 봇은 무엇을 찾나요?</h2>
+<p>네 가지가 동시에 켜지는 순간만 신호로 보내요.</p>
+<div class="cond"><div><span>🧱</span><span><b>눌림목</b><em>충분히 싸지고 바닥을 다졌나</em></span></div>
+<div><span>💎</span><span><b>회사 체력</b><em>돈을 벌고 있고 이익 전망이 나쁘지 않나</em></span></div>
+<div><span>📈</span><span><b>상승 모멘텀</b><em>다시 오르기 시작했나</em></span></div>
+<div><span>🧮</span><span><b>종합 점수</b><em>세 가지를 합친 점수가 기준을 넘었나</em></span></div></div>
+<p class="mute">조건이 하나라도 모자라면 신호를 보내지 않고 기다려요.</p></div>
+</section>
+
+<section id="find">
+<input id="q" type="search" placeholder="종목 이름이나 티커 (예: 엔비디아, NVDA)" autocomplete="off" aria-label="종목 검색">
+<ul class="res" id="res"></ul>
+<div id="detail"></div>
+</section>
+
+<section id="score">
+<div class="card" id="perf"><h2>신호 성적표</h2><p class="mute">불러오는 중…</p></div>
+<div class="card"><h2>신호별 내역</h2><p class="mute">최신순이에요. 수익률은 신호가 뜬 날 기준가 대비 지금(또는 방어선 이탈 시점)까지예요.</p>
+<div style="overflow-x:auto"><table id="ledger"><thead><tr><th>#</th><th>종목</th><th>신호일</th><th class="r">수익률</th><th>상태</th></tr></thead><tbody></tbody></table></div>
+<button class="btn ghost" id="more" style="margin-top:12px;display:none">더 보기</button></div>
+</section>
+
+<section id="start">
+<div class="card"><h2>텔레그램에서 받아 보세요</h2>
+<p>신호가 뜨면 텔레그램으로 알려 드려요. 무료예요. 종목 이름만 보내면 쉬운 카드로 답해요.</p>
+<p><a class="btn" id="tglink" href="https://open.kakao.com/o/gq92qKDi" rel="noopener">가입하는 방법 보기</a></p>
+<div class="note">가입 암호가 필요해요. 카카오톡 오픈채팅 '레버가치'에서 받으세요. 암호는 텔레그램 봇 대화창에 그대로 보내면 돼요.</div></div>
+<div class="card"><h2>이렇게 달라요</h2>
+<p>· 신호는 드물어요. 조건이 다 맞을 때만 보내요.<br>· 신호가 틀린 것도 성적표에 그대로 남겨요.<br>· 매수 권유가 아니에요. 조건이 맞았다는 알림이에요.<br>· 3~6개월 보유, 나눠 사기, 방어선을 기준으로 삼아요.</p></div>
+</section>
+
+<footer id="foot">참고 정보예요 · 매수·매도 권유가 아니에요 · 투자 판단과 책임은 본인에게 있어요.<br><span id="upd"></span></footer>
+</div>
+<script>
+(function(){
+"use strict";
+var D=null,ST=null,shown=0,PAGE=20;
+function $(s){return document.querySelector(s)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function pct(v,nd){if(v==null)return "-";var n=Number(v);return (n>0?"+":"")+n.toFixed(nd==null?1:nd)+"%"}
+function cls(v){return v>0?"pos":(v<0?"neg":"")}
+function tab(id){
+  document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===id)});
+  document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===id?"true":"false")});
+  try{history.replaceState(null,"","#"+id)}catch(e){}
+}
+document.querySelectorAll("nav button").forEach(function(b){b.addEventListener("click",function(){tab(b.dataset.t)})});
+function get(u){return fetch(u,{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+function gauge(v){
+  v=Math.max(0,Math.min(100,Number(v)||0));var a=Math.PI*(1-v/100),cx=150,cy=140,r=110;
+  var x=cx+r*0.78*Math.cos(a),y=cy-r*0.78*Math.sin(a);
+  var seg=[["#b42318",0,25],["#f79009",25,45],["#eab308",45,55],["#84cc16",55,75],["#15803d",75,100]];
+  var p=seg.map(function(s){var a0=Math.PI*(1-s[1]/100),a1=Math.PI*(1-s[2]/100);
+    return '<path d="M'+(cx+r*Math.cos(a0))+' '+(cy-r*Math.sin(a0))+' A'+r+' '+r+' 0 0 1 '+(cx+r*Math.cos(a1))+' '+(cy-r*Math.sin(a1))+'" stroke="'+s[0]+'" stroke-width="16" fill="none"/>'}).join("");
+  return '<svg class="gauge" viewBox="0 0 300 175" role="img" aria-label="공포·탐욕 지수 '+v.toFixed(0)+'">'+p+
+   '<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="7" fill="currentColor"/>'+
+   '<text x="'+cx+'" y="170" text-anchor="middle" font-size="26" font-weight="700" fill="currentColor">'+v.toFixed(0)+'</text></svg>';
+}
+function renderToday(){
+  var m=D.market||{},w=$("#weather");
+  var fear=m.fg!=null?(m.fg<=25?"극단적 공포":m.fg<=45?"공포":m.fg<55?"중립":m.fg<75?"탐욕":"극단적 탐욕"):"";
+  w.innerHTML='<h2>시장 날씨</h2>'+(m.fg!=null?gauge(m.fg)+'<p style="text-align:center;margin:4px 0 0"><b>'+esc(m.label||fear)+'</b></p>'+
+    '<p class="mute" style="text-align:center">공포·탐욕 지수 (0 공포 ~ 100 탐욕) · '+esc(m.date||"")+'</p>':'<p class="mute">시장 자료가 아직 없어요.</p>')+
+    (m.temp?'<div class="note">'+esc(m.temp.replace(/^🌡\s*/,""))+'</div>':"")+
+    '<p class="mute">사람들이 겁먹은 구간은 저점반전 신호가 나올 후보가 늘어나는 때이기도 해요. 다만 더 떨어질 수도 있어요.</p>';
+  var s=D.signals||[],a=$("#sigs");
+  a.innerHTML='<h2>지금 신호가 켜진 종목</h2>'+(s.length?'<ul class="res">'+s.map(function(x){return li(x)}).join("")+'</ul>':
+    '<p>지금은 신호가 켜진 종목이 없어요. 조건이 다 맞을 때만 알려 드려요.</p>');
+  var n=D.near||[],b=$("#near");
+  b.innerHTML='<h2>문턱까지 온 종목</h2><p class="mute">조건 하나가 부족해서 아직 신호가 아닌 종목이에요.</p>'+(n.length?'<ul class="res">'+n.map(function(x){return li(x)}).join("")+'</ul>':'<p>지금은 없어요.</p>');
+  bindList(a);bindList(b);
+}
+function li(x){return '<li data-t="'+esc(x.t)+'" tabindex="0" role="button"><span style="font-size:22px">'+esc(x.l)+'</span><span class="nm"><b>'+esc(x.n)+'</b><small>'+esc(x.v)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점</small></span></li>'}
+function bindList(root){root.querySelectorAll("li").forEach(function(e){
+  function go(){tab("find");open(e.dataset.t);window.scrollTo(0,0)}
+  e.addEventListener("click",go);e.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();go()}})})}
+function open(t){
+  if(!ST)return;var x=ST.items.filter(function(i){return i.t===t})[0];if(!x)return;
+  var names=["🧱","💎","📈","🧮"];
+  var h='<div class="card"><h2>'+esc(x.l)+' '+esc(x.n)+'</h2><p><b>'+esc(x.v)+'</b></p><p>'+esc(x.x)+'</p>'+
+   '<p class="mute">'+esc(x.k)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점'+(x.p!=null?' · 기준 가격 '+x.p:'')+(x.dd!=null?' · 고점 대비 '+x.dd+'%':'')+'</p><div class="cond">'+
+   x.it.map(function(it,i){return '<div><span>'+(x.ok[i]?"✅":"⬜")+'</span><span><b>'+esc(it[0])+'</b>'+(it[1]?'<em>'+esc(it[1])+'</em>':'')+'</span></div>'}).join("")+'</div>'+
+   (x.k==="레버리지"?'<div class="note">⚠️ 레버리지 상품이에요. 오르내림만 반복해도 원금이 줄어드는 구조라 초보자에게는 어려운 상품이에요.</div>':'')+
+   '<p class="mute">조건이 맞았다는 뜻이지 사라는 뜻이 아니에요. 판단과 책임은 본인에게 있어요.</p></div>';
+  $("#detail").innerHTML=h;
+}
+function norm(s){return String(s||"").toLowerCase().replace(/\s+/g,"")}
+function search(){
+  if(!ST)return;var q=norm($("#q").value),ul=$("#res");$("#detail").innerHTML="";
+  if(!q){ul.innerHTML="";return}
+  var r=ST.items.filter(function(i){return norm(i.t).indexOf(q)===0||norm(i.n).indexOf(q)>=0}).slice(0,12);
+  ul.innerHTML=r.length?r.map(function(x){return li(x)}).join(""):'<li style="cursor:default">찾는 종목이 없어요. 봇이 보는 약 '+ST.items.length+'개 종목 중에서만 찾을 수 있어요.</li>';
+  ul.querySelectorAll("li[data-t]").forEach(function(e){e.addEventListener("click",function(){open(e.dataset.t);ul.innerHTML=""})});
+}
+function renderPerf(){
+  var p=D.perf||{},k=p.kinds||{},el=$("#perf");
+  var first=p.first_r3_date;
+  var rows=Object.keys(k).map(function(n){var v=k[n];return '<tr><td>'+esc(n)+'</td><td class="r">'+v.n+'</td><td class="r '+cls(v.avg)+'">'+pct(v.avg)+'</td><td class="r">'+(v.plus_pct==null?"-":v.plus_pct.toFixed(0)+"%")+'</td><td class="r">'+v.brk+'</td></tr>'}).join("");
+  el.innerHTML='<h2>신호 성적표</h2><p class="mute">'+esc(p.first_bar||"")+' ~ '+esc(p.last_bar||"")+' · 신호 '+p.n+'건 · 틀린 신호도 모두 포함</p>'+
+   '<div class="row"><div class="stat"><span>평균 수익률</span><b class="'+cls(p.avg)+'">'+pct(p.avg)+'</b></div>'+
+   '<div class="stat"><span>중앙값</span><b class="'+cls(p.med)+'">'+pct(p.med)+'</b></div>'+
+   '<div class="stat"><span>수익 중인 신호</span><b>'+(p.plus_pct==null?"-":p.plus_pct.toFixed(0)+"%")+'</b></div>'+
+   '<div class="stat"><span>같은 기간 S&amp;P500</span><b class="'+cls(p.spy_avg)+'">'+pct(p.spy_avg)+'</b></div></div>'+
+   '<div class="note"><b>솔직하게 말씀드려요.</b> 지금까지 신호의 평균 수익률은 마이너스이고, 같은 기간 시장보다도 낮아요. 이 봇은 3~6개월 보유를 기준으로 만들었는데 지금 신호 대부분은 아직 3개월이 지나지 않았어요'+(first?' (첫 3개월 경과일 '+esc(first)+')':'')+'. 3개월·6개월 결과가 쌓이면 이 표에 그대로 더할게요.</div>'+
+   '<table><thead><tr><th>종류</th><th class="r">건수</th><th class="r">평균</th><th class="r">수익 비율</th><th class="r">방어선 이탈</th></tr></thead><tbody>'+rows+'</tbody></table>'+
+   '<details><summary>계산 방식</summary><p class="mute">신호가 뜬 날 기준가에서 지금(방어선을 이탈했다면 이탈 시점)까지의 변화율이에요. 수수료·세금·환율은 반영하지 않은 단순 계산이에요. 방어선 이탈 '+p.brk+'건은 이탈 시점의 수익률로 고정돼요.</p></details>';
+  var tb=$("#ledger tbody");tb.innerHTML="";shown=0;more();
+}
+function more(){
+  var L=D.ledger||[],tb=$("#ledger tbody"),end=Math.min(shown+PAGE,L.length);
+  for(var i=shown;i<end;i++){var x=L[i];var tr=document.createElement("tr");
+    tr.innerHTML='<td>'+x.no+'</td><td>'+esc(x.n)+'</td><td>'+esc((x.d||"").slice(5))+'</td><td class="r '+cls(x.r)+'">'+pct(x.r)+'</td><td>'+esc(x.st)+'</td>';tb.appendChild(tr)}
+  shown=end;$("#more").style.display=shown<L.length?"inline-block":"none";
+}
+$("#more").addEventListener("click",more);
+$("#q").addEventListener("input",search);
+get("data.json").then(function(d){D=d;renderToday();renderPerf();$("#upd").textContent="자료 기준 "+(d.updated||"");}).catch(function(){
+  ["#weather","#sigs","#near","#perf"].forEach(function(s){$(s).innerHTML='<p class="mute">자료를 불러오지 못했어요. 잠시 뒤에 새로고침해 주세요.</p>'})});
+get("stocks.json").then(function(s){ST=s;search()}).catch(function(){});
+var h=(location.hash||"").slice(1);if(["today","find","score","start"].indexOf(h)>=0)tab(h);
+})();
+</script>
+</body>
+</html>
