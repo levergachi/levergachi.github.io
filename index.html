@@ -10,46 +10,56 @@
 <meta property="og:type" content="website">
 <style>
 :root{--bg:#f6f7f9;--card:#fff;--ink:#17202a;--mute:#667085;--line:#e4e7ec;--brand:#0f766e;--brand-ink:#fff;--up:#c2410c;--dn:#1d4ed8;--ok:#15803d;--warn:#b45309;--bad:#b42318;--chip:#eef2f6}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1418;--card:#171e24;--ink:#e8edf2;--mute:#9aa7b3;--line:#27313a;--brand:#2dd4bf;--brand-ink:#052e2b;--up:#fb923c;--dn:#60a5fa;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--chip:#1f2830}}
-:root[data-theme="dark"]{--bg:#0f1418;--card:#171e24;--ink:#e8edf2;--mute:#9aa7b3;--line:#27313a;--brand:#2dd4bf;--brand-ink:#052e2b;--up:#fb923c;--dn:#60a5fa;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--chip:#1f2830}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1418;--card:#171e24;--ink:#e8edf2;--mute:#9aa7b3;--line:#27313a;--brand:#2dd4bf;--brand-ink:#052e2b;--up:#fb923c;--dn:#60a5fa;--ok:#4ade80;--warn:#fbbf24;--bad:#f87171;--chip:#1f2830}}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px 72px}
-header{padding:28px 0 8px}
+header{padding:26px 0 8px}
 h1{font-size:24px;line-height:1.3;margin:0 0 6px}
 .sub{color:var(--mute);margin:0}
-nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;padding:10px 0;border-bottom:1px solid var(--line);overflow-x:auto}
-nav button{flex:1 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:999px;font:inherit;font-size:15px;cursor:pointer;white-space:nowrap}
+nav{position:sticky;top:0;z-index:5;background:var(--bg);display:flex;gap:6px;padding:10px 0;border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none}
+nav::-webkit-scrollbar{display:none}
+nav button{flex:0 0 auto;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:9px 14px;border-radius:999px;font:inherit;font-size:15px;cursor:pointer;white-space:nowrap}
 nav button[aria-selected="true"]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand);font-weight:600}
 section{display:none;padding-top:16px}section.on{display:block}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px}
 .card h2{font-size:17px;margin:0 0 8px}
 .mute{color:var(--mute);font-size:14px}
-.big{font-size:34px;font-weight:700;line-height:1.1}
 .row{display:flex;gap:12px;flex-wrap:wrap}.row>*{flex:1 1 140px}
 .stat{background:var(--chip);border-radius:12px;padding:12px}
 .stat b{display:block;font-size:22px}
 .stat span{font-size:13px;color:var(--mute)}
 .pos{color:var(--up)}.neg{color:var(--dn)}
-.chip{display:inline-block;background:var(--chip);border-radius:999px;padding:2px 10px;font-size:13px;margin:2px 4px 2px 0}
-.btn{display:inline-block;background:var(--brand);color:var(--brand-ink);text-decoration:none;padding:12px 20px;border-radius:12px;font-weight:700;border:0;font:inherit;font-weight:700;cursor:pointer}
-.btn.ghost{background:var(--chip);color:var(--ink)}
-input[type=search]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:17px}
+.chip{display:inline-block;background:var(--chip);border-radius:999px;padding:3px 11px;font-size:13px;margin:2px 4px 2px 0;border:0;color:var(--ink);font-family:inherit;cursor:pointer}
+.btn{display:inline-block;background:var(--brand);color:var(--brand-ink);text-decoration:none;padding:11px 18px;border-radius:12px;font-weight:700;border:0;font:inherit;font-weight:700;cursor:pointer;margin:4px 6px 4px 0}
+.btn.ghost{background:var(--chip);color:var(--ink);font-weight:600}
+.btn[disabled]{opacity:.45;cursor:default}
+input[type=search],input[type=text]{width:100%;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:17px}
 .res{list-style:none;margin:10px 0 0;padding:0}
 .res li{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin:0 0 8px;cursor:pointer;display:flex;gap:10px;align-items:center}
 .res li .nm{flex:1}.res li small{display:block;color:var(--mute)}
+.res li.plain{cursor:default}
 .cond{display:grid;gap:8px;margin:10px 0}
-.cond div{display:flex;gap:10px;align-items:flex-start;background:var(--chip);border-radius:10px;padding:10px 12px}
+.cond>div{display:flex;gap:10px;align-items:flex-start;background:var(--chip);border-radius:10px;padding:10px 12px}
 .cond em{font-style:normal;font-size:14px;color:var(--mute);display:block}
+.cond .bw{flex:1}
+.bar{height:6px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:6px}.bar i{display:block;height:100%;background:var(--brand)}
+.bar.no i{background:var(--warn)}
 table{width:100%;border-collapse:collapse;font-size:14px}
 th,td{padding:8px 6px;border-bottom:1px solid var(--line);text-align:left}
-#ledger td:nth-child(3),#ledger th:nth-child(3),#ledger td:nth-child(4),#ledger td:nth-child(5),#ledger td:first-child{white-space:nowrap}
+#ledger td:nth-child(1),#ledger td:nth-child(3),#ledger td:nth-child(4),#ledger td:nth-child(5),#ledger th:nth-child(3){white-space:nowrap}
 th{color:var(--mute);font-weight:600;font-size:13px}td.r,th.r{text-align:right}
 .gauge{width:100%;max-width:300px;display:block;margin:4px auto 0}
-.bar{height:8px;border-radius:99px;background:var(--chip);overflow:hidden;margin-top:4px}.bar i{display:block;height:100%;background:var(--brand)}
-footer{margin-top:28px;color:var(--mute);font-size:13px}
 .note{background:var(--chip);border-radius:10px;padding:10px 12px;font-size:14px;margin:10px 0}
+.note.warn{border-left:4px solid var(--warn)}
 details summary{cursor:pointer;color:var(--brand);margin-top:8px}
+.why{font-size:14px;margin:6px 0;padding-left:0;list-style:none}.why li{margin:4px 0;color:var(--ink)}
+canvas.chart{width:100%;height:220px;display:block;margin:8px 0}
+.opt{display:block;width:100%;text-align:left;background:var(--chip);border:2px solid transparent;color:var(--ink);padding:12px 14px;border-radius:12px;margin:8px 0;font:inherit;cursor:pointer}
+.opt.ok{border-color:var(--ok)}.opt.no{border-color:var(--bad)}
+.lvl{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+footer{margin-top:28px;color:var(--mute);font-size:13px}
+.tag{font-size:12px;background:var(--brand);color:var(--brand-ink);border-radius:6px;padding:1px 7px;margin-left:6px;vertical-align:middle}
 :focus-visible{outline:3px solid var(--brand);outline-offset:2px}
 </style>
 </head>
@@ -62,14 +72,20 @@ details summary{cursor:pointer;color:var(--brand);margin-top:8px}
 <nav role="tablist" aria-label="메뉴">
 <button role="tab" aria-selected="true" data-t="today">오늘</button>
 <button role="tab" aria-selected="false" data-t="find">종목 찾기</button>
+<button role="tab" aria-selected="false" data-t="my">내 종목</button>
+<button role="tab" aria-selected="false" data-t="play">놀이터</button>
 <button role="tab" aria-selected="false" data-t="score">성적표</button>
+<button role="tab" aria-selected="false" data-t="learn">배우기</button>
 <button role="tab" aria-selected="false" data-t="start">시작하기</button>
 </nav>
 
 <section id="today" class="on">
 <div class="card" id="weather"><h2>시장 날씨</h2><p class="mute">불러오는 중…</p></div>
+<div class="card" id="brief"></div>
 <div class="card" id="sigs"><h2>지금 신호가 켜진 종목</h2><p class="mute">불러오는 중…</p></div>
 <div class="card" id="near"><h2>문턱까지 온 종목</h2><p class="mute">불러오는 중…</p></div>
+<div class="card" id="hot" style="display:none"></div>
+<div class="card" id="todayplay"></div>
 <div class="card"><h2>이 봇은 무엇을 찾나요?</h2>
 <p>네 가지가 동시에 켜지는 순간만 신호로 보내요.</p>
 <div class="cond"><div><span>🧱</span><span><b>눌림목</b><em>충분히 싸지고 바닥을 다졌나</em></span></div>
@@ -80,9 +96,21 @@ details summary{cursor:pointer;color:var(--brand);margin-top:8px}
 </section>
 
 <section id="find">
-<input id="q" type="search" placeholder="종목 이름이나 티커 (예: 엔비디아, NVDA)" autocomplete="off" aria-label="종목 검색">
+<input id="q" type="search" placeholder="종목 이름이나 티커, 문장도 돼요 (예: 엔비디아 사도 돼?)" autocomplete="off" aria-label="종목 검색">
 <ul class="res" id="res"></ul>
 <div id="detail"></div>
+</section>
+
+<section id="my">
+<div class="card"><h2>⭐ 내 종목</h2><p class="mute">종목 카드의 ⭐ 버튼으로 담아요. 이 기기의 브라우저에만 저장돼요. 다른 기기와는 이어지지 않아요.</p>
+<ul class="res" id="mylist"></ul></div>
+</section>
+
+<section id="play">
+<div class="card" id="me"></div>
+<div class="card" id="quiz"></div>
+<div class="card" id="pred"></div>
+<p class="mute">기록은 이 기기의 브라우저에만 저장돼요. 사람들끼리의 순위는 텔레그램 봇에서만 볼 수 있어요. 상금은 없고 재미로 하는 거예요.</p>
 </section>
 
 <section id="score">
@@ -92,32 +120,49 @@ details summary{cursor:pointer;color:var(--brand);margin-top:8px}
 <button class="btn ghost" id="more" style="margin-top:12px;display:none">더 보기</button></div>
 </section>
 
+<section id="learn">
+<div class="card"><h2>처음이에요</h2><div id="guide"></div></div>
+<div class="card"><h2>용어 풀이</h2>
+<input id="gq" type="search" placeholder="용어 검색 (예: 눌림목)" autocomplete="off" aria-label="용어 검색">
+<div id="gl" style="margin-top:8px"></div></div>
+</section>
+
 <section id="start">
 <div class="card"><h2>텔레그램에서 받아 보세요</h2>
-<p>신호가 뜨면 텔레그램으로 알려 드려요. 무료예요. 종목 이름만 보내면 쉬운 카드로 답해요.</p>
-<p><a class="btn" id="tglink" href="https://open.kakao.com/o/gq92qKDi" rel="noopener">가입하는 방법 보기</a></p>
+<p>신호가 뜨면 텔레그램으로 알려 드려요. 무료예요. 종목 이름만 보내면 쉬운 카드로 답하고, 사람들과 순위를 겨루는 놀이터도 있어요.</p>
+<p><a class="btn" href="https://open.kakao.com/o/gq92qKDi" rel="noopener">가입 방법 보기 (오픈채팅)</a></p>
 <div class="note">가입 암호가 필요해요. 카카오톡 오픈채팅 '레버가치'에서 받으세요. 암호는 텔레그램 봇 대화창에 그대로 보내면 돼요.</div></div>
 <div class="card"><h2>이렇게 달라요</h2>
 <p>· 신호는 드물어요. 조건이 다 맞을 때만 보내요.<br>· 신호가 틀린 것도 성적표에 그대로 남겨요.<br>· 매수 권유가 아니에요. 조건이 맞았다는 알림이에요.<br>· 3~6개월 보유, 나눠 사기, 방어선을 기준으로 삼아요.</p></div>
 </section>
 
-<footer id="foot">참고 정보예요 · 매수·매도 권유가 아니에요 · 투자 판단과 책임은 본인에게 있어요.<br><span id="upd"></span></footer>
+<footer>참고 정보예요 · 매수·매도 권유가 아니에요 · 투자 판단과 책임은 본인에게 있어요.<br><span id="upd"></span></footer>
 </div>
 <script>
 (function(){
 "use strict";
-var D=null,ST=null,shown=0,PAGE=20;
+var D=null,ST=null,CH=null,DT=null,QZ=null,GL=null,GD=null,NS=null,shown=0,PAGE=20,CUR=null;
+var LEVELS=[[0,"씨앗"],[50,"새싹 주린이"],[150,"차트 좀 보는 주린이"],[300,"눌림목 헌터"],[600,"공포에 사는 사람"],[1000,"레버가치 고수"],[2000,"전설의 저점 사냥꾼"]];
+var BONUS={7:20,30:100,100:300},PTS_OK=10,PTS_NO=2;
 function $(s){return document.querySelector(s)}
 function esc(s){return String(s==null?"":s).replace(/[&<>"']/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]})}
+function rich(s){return esc(s).replace(/&lt;b&gt;/g,"<b>").replace(/&lt;\/b&gt;/g,"</b>").replace(/\n/g,"<br>")}
 function pct(v,nd){if(v==null)return "-";var n=Number(v);return (n>0?"+":"")+n.toFixed(nd==null?1:nd)+"%"}
 function cls(v){return v>0?"pos":(v<0?"neg":"")}
+function get(u){return fetch(u,{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+/* ---- 이 기기에만 저장 ---- */
+var MEM={my:[],pts:0,last:"",streak:0,qdone:{},preds:[],best:0};
+try{var m=JSON.parse(localStorage.getItem("lgp1")||"{}");for(var k in m)MEM[k]=m[k]}catch(e){}
+function save(){try{localStorage.setItem("lgp1",JSON.stringify(MEM))}catch(e){}}
+/* ---- 탭 ---- */
 function tab(id){
   document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===id)});
   document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===id?"true":"false")});
   try{history.replaceState(null,"","#"+id)}catch(e){}
+  if(id==="my")renderMy();if(id==="play")renderPlay();
 }
 document.querySelectorAll("nav button").forEach(function(b){b.addEventListener("click",function(){tab(b.dataset.t)})});
-function get(u){return fetch(u,{cache:"no-cache"}).then(function(r){if(!r.ok)throw new Error(r.status);return r.json()})}
+/* ---- 날씨 ---- */
 function gauge(v){
   v=Math.max(0,Math.min(100,Number(v)||0));var a=Math.PI*(1-v/100),cx=150,cy=140,r=110;
   var x=cx+r*0.78*Math.cos(a),y=cy-r*0.78*Math.sin(a);
@@ -128,6 +173,10 @@ function gauge(v){
    '<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="7" fill="currentColor"/>'+
    '<text x="'+cx+'" y="170" text-anchor="middle" font-size="26" font-weight="700" fill="currentColor">'+v.toFixed(0)+'</text></svg>';
 }
+function li(x){return '<li data-t="'+esc(x.t)+'" tabindex="0" role="button"><span style="font-size:22px">'+esc(x.l)+'</span><span class="nm"><b>'+esc(x.n)+'</b><small>'+esc(x.v)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점</small></span></li>'}
+function bindList(root){root.querySelectorAll("li[data-t]").forEach(function(e){
+  function go(){tab("find");openStock(e.dataset.t);window.scrollTo(0,0)}
+  e.addEventListener("click",go);e.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();go()}})})}
 function renderToday(){
   var m=D.market||{},w=$("#weather");
   var fear=m.fg!=null?(m.fg<=25?"극단적 공포":m.fg<=45?"공포":m.fg<55?"중립":m.fg<75?"탐욕":"극단적 탐욕"):"";
@@ -135,38 +184,138 @@ function renderToday(){
     '<p class="mute" style="text-align:center">공포·탐욕 지수 (0 공포 ~ 100 탐욕) · '+esc(m.date||"")+'</p>':'<p class="mute">시장 자료가 아직 없어요.</p>')+
     (m.temp?'<div class="note">'+esc(m.temp.replace(/^🌡\s*/,""))+'</div>':"")+
     '<p class="mute">사람들이 겁먹은 구간은 저점반전 신호가 나올 후보가 늘어나는 때이기도 해요. 다만 더 떨어질 수도 있어요.</p>';
+  var p=D.perf||{};
+  $("#brief").innerHTML='<h2>오늘의 한 줄</h2><p>'+D.n_stocks+'종목 점검 완료 · 신호가 켜진 종목 <b>'+(D.signals||[]).length+'개</b> · 문턱 <b>'+(D.near||[]).length+'개</b><br><span class="mute">지금까지 신호 '+p.n+'건 · 수익 중 '+(p.plus_pct==null?"-":p.plus_pct.toFixed(0)+"%")+' · 평균 '+pct(p.avg)+'</span></p>';
   var s=D.signals||[],a=$("#sigs");
-  a.innerHTML='<h2>지금 신호가 켜진 종목</h2>'+(s.length?'<ul class="res">'+s.map(function(x){return li(x)}).join("")+'</ul>':
-    '<p>지금은 신호가 켜진 종목이 없어요. 조건이 다 맞을 때만 알려 드려요.</p>');
+  a.innerHTML='<h2>지금 신호가 켜진 종목</h2>'+(s.length?'<ul class="res">'+s.map(li).join("")+'</ul>':'<p>지금은 신호가 켜진 종목이 없어요. 조건이 다 맞을 때만 알려 드려요.</p>');
   var n=D.near||[],b=$("#near");
-  b.innerHTML='<h2>문턱까지 온 종목</h2><p class="mute">조건 하나가 부족해서 아직 신호가 아닌 종목이에요.</p>'+(n.length?'<ul class="res">'+n.map(function(x){return li(x)}).join("")+'</ul>':'<p>지금은 없어요.</p>');
+  b.innerHTML='<h2>문턱까지 온 종목</h2><p class="mute">조건 하나가 부족해서 아직 신호가 아닌 종목이에요.</p>'+(n.length?'<ul class="res">'+n.map(li).join("")+'</ul>':'<p>지금은 없어요.</p>');
   bindList(a);bindList(b);
+  var h=D.hot||[],hh=$("#hot");
+  if(h.length){hh.style.display="block";hh.innerHTML='<h2>🔥 많이 본 종목</h2><p class="mute">최근 7일 봇에서 많이 조회된 종목이에요. 조회한 사람은 기록하지 않아요.</p>'+h.map(function(x){return '<button class="chip" data-t="'+esc(x.t)+'">'+esc(x.n)+' · '+x.c+'회</button>'}).join("");
+    hh.querySelectorAll("button").forEach(function(e){e.addEventListener("click",function(){tab("find");openStock(e.dataset.t);window.scrollTo(0,0)})})}
+  renderTodayPlay();
 }
-function li(x){return '<li data-t="'+esc(x.t)+'" tabindex="0" role="button"><span style="font-size:22px">'+esc(x.l)+'</span><span class="nm"><b>'+esc(x.n)+'</b><small>'+esc(x.v)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점</small></span></li>'}
-function bindList(root){root.querySelectorAll("li").forEach(function(e){
-  function go(){tab("find");open(e.dataset.t);window.scrollTo(0,0)}
-  e.addEventListener("click",go);e.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();go()}})})}
-function open(t){
-  if(!ST)return;var x=ST.items.filter(function(i){return i.t===t})[0];if(!x)return;
-  var names=["🧱","💎","📈","🧮"];
+/* ---- 종목 카드 ---- */
+function bars(x){
+  return x.it.map(function(it,i){var ok=x.ok[i],val=it[2],mx=it[3];
+    var bar=(val!=null&&mx)?'<div class="bar'+(ok?'':' no')+'"><i style="width:'+Math.max(2,Math.min(100,val/mx*100))+'%"></i></div>':'';
+    return '<div><span>'+(ok?"✅":"⬜")+'</span><span class="bw"><b>'+esc(it[0])+'</b>'+(val!=null&&mx?' <span class="mute">'+val.toFixed(1)+' / '+mx+(it[4]!=null?' (기준 '+it[4].toFixed(0)+')':'')+'</span>':'')+(it[1]?'<em>'+esc(it[1])+'</em>':'')+bar+'</span></div>'}).join("");
+}
+function openStock(t){
+  if(!ST)return;var x=ST.items.filter(function(i){return i.t===t})[0];if(!x)return;CUR=x;
+  var mine=MEM.my.indexOf(t)>=0;
   var h='<div class="card"><h2>'+esc(x.l)+' '+esc(x.n)+'</h2><p><b>'+esc(x.v)+'</b></p><p>'+esc(x.x)+'</p>'+
-   '<p class="mute">'+esc(x.k)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점'+(x.p!=null?' · 기준 가격 '+x.p:'')+(x.dd!=null?' · 고점 대비 '+x.dd+'%':'')+'</p><div class="cond">'+
-   x.it.map(function(it,i){return '<div><span>'+(x.ok[i]?"✅":"⬜")+'</span><span><b>'+esc(it[0])+'</b>'+(it[1]?'<em>'+esc(it[1])+'</em>':'')+'</span></div>'}).join("")+'</div>'+
-   (x.k==="레버리지"?'<div class="note">⚠️ 레버리지 상품이에요. 오르내림만 반복해도 원금이 줄어드는 구조라 초보자에게는 어려운 상품이에요.</div>':'')+
-   '<p class="mute">조건이 맞았다는 뜻이지 사라는 뜻이 아니에요. 판단과 책임은 본인에게 있어요.</p></div>';
-  $("#detail").innerHTML=h;
+   '<p class="mute">'+esc(x.k)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점'+(x.p!=null?' · 기준 가격 '+x.p:'')+(x.dd!=null?' · 고점 대비 '+x.dd+'%':'')+'</p><div class="cond">'+bars(x)+'</div>'+
+   (x.k==="레버리지"?'<div class="note warn">⚠️ 레버리지 상품이에요. 오르내림만 반복해도 원금이 줄어드는 구조라 초보자에게는 어려운 상품이에요.</div>':'')+
+   '<div><button class="btn ghost" id="bChart">📈 차트</button><button class="btn ghost" id="bPro">🔬 전문가 보기</button><button class="btn ghost" id="bMy">'+(mine?'⭐ 담았어요 (빼기)':'☆ 내 종목에 담기')+'</button><button class="btn ghost" id="bCard">📤 카드 이미지 저장</button></div>'+
+   '<div id="ex"></div><p class="mute">조건이 맞았다는 뜻이지 사라는 뜻이 아니에요. 판단과 책임은 본인에게 있어요.</p></div>';
+  $("#detail").innerHTML=h;$("#res").innerHTML="";
+  $("#bChart").addEventListener("click",function(){showChart(t)});
+  $("#bPro").addEventListener("click",function(){showPro(t)});
+  $("#bMy").addEventListener("click",function(){toggleMy(t)});
+  $("#bCard").addEventListener("click",function(){stockCard(x)});
 }
+function toggleMy(t){var i=MEM.my.indexOf(t);if(i>=0)MEM.my.splice(i,1);else MEM.my.push(t);save();openStock(t)}
+function load(name,key,fn){if(window[key])return fn(window[key]);get(name).then(function(d){window[key]=d;fn(d)}).catch(function(){$("#ex").innerHTML='<p class="mute">불러오지 못했어요. 잠시 뒤에 다시 눌러 주세요.</p>'})}
+function showChart(t){
+  $("#ex").innerHTML='<p class="mute">차트를 불러오는 중…</p>';
+  load("charts.json","_CH",function(d){var c=(d.items||{})[t];
+    if(!c||c.p.length<5){$("#ex").innerHTML='<p class="mute">이 종목은 차트 자료가 아직 부족해요.</p>';return}
+    $("#ex").innerHTML='<canvas class="chart" id="cv" role="img" aria-label="최근 '+c.p.length+'거래일 종가"></canvas><p class="mute">최근 '+c.p.length+'거래일 종가'+(c.s?' · 점선은 봇의 방어선 '+c.s:'')+'</p>';
+    draw($("#cv"),c)})}
+function draw(cv,c){
+  var dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*dpr;cv.height=h*dpr;var g=cv.getContext("2d");g.scale(dpr,dpr);
+  var cs=getComputedStyle(document.documentElement),ink=cs.getPropertyValue("--mute").trim(),br=cs.getPropertyValue("--brand").trim(),wn=cs.getPropertyValue("--warn").trim();
+  var P=c.p.slice(),mn=Math.min.apply(null,P),mx=Math.max.apply(null,P);if(c.s){mn=Math.min(mn,c.s)}
+  var pad=(mx-mn)*0.08||1;mn-=pad;mx+=pad;var L=8,R=52,T=8,B=20,X=function(i){return L+(w-L-R)*i/(P.length-1)},Y=function(v){return T+(h-T-B)*(1-(v-mn)/(mx-mn))};
+  g.font="11px sans-serif";g.fillStyle=ink;g.strokeStyle=ink;g.lineWidth=.5;
+  for(var k=0;k<4;k++){var v=mn+(mx-mn)*k/3,y=Y(v);g.globalAlpha=.25;g.beginPath();g.moveTo(L,y);g.lineTo(w-R,y);g.stroke();g.globalAlpha=1;g.fillText(v>=100?v.toFixed(0):v.toFixed(2),w-R+4,y+4)}
+  if(c.s){g.strokeStyle=wn;g.setLineDash([5,4]);g.lineWidth=1.5;g.beginPath();g.moveTo(L,Y(c.s));g.lineTo(w-R,Y(c.s));g.stroke();g.setLineDash([])}
+  g.strokeStyle=br;g.lineWidth=2;g.beginPath();P.forEach(function(v,i){i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v))});g.stroke();
+  g.fillStyle=br;g.beginPath();g.arc(X(P.length-1),Y(P[P.length-1]),4,0,7);g.fill();
+  g.fillStyle=ink;var d=c.d;[0,Math.floor(d.length/2),d.length-1].forEach(function(i){var s=d[i];s=s.slice(2,4)+"/"+s.slice(4);var tx=Math.max(0,Math.min(w-R-28,X(i)-14));g.fillText(s,tx,h-4)});
+}
+function showPro(t){
+  $("#ex").innerHTML='<p class="mute">불러오는 중…</p>';
+  load("detail.json","_DT",function(d){var x=(d.items||{})[t];if(!x){$("#ex").innerHTML="";return}
+    function ul(a){return a&&a.length?'<ul class="why">'+a.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ul>':'<p class="mute">없음</p>'}
+    var h='<div class="note"><b>🧱 눌림목 (35점)</b>'+ul(x.sw)+'<b>💎 펀더멘털 (40점)</b>'+ul(x.fw)+'<b>📈 상승 모멘텀 (25점)</b>'+ul(x.tw)+'</div>';
+    if(x.red&&x.red.length)h+='<div class="note warn"><b>⚠️ 주의할 점</b>'+ul(x.red)+'</div>';
+    if(x.gm&&x.gm.length)h+='<div class="note"><b>알림이 보류되는 이유</b>'+ul(x.gm)+'</div>';
+    var rule=[];if(x.stop)rule.push("방어선 "+x.stop);if(x.pz)rule.push("한 종목 계좌의 약 "+x.pz+"%");
+    if(x.earn)rule.push(x.earn);if(x.ana)rule.push(x.ana);if(x.tgt)rule.push("애널리스트 목표가 "+x.tgt);if(x.reg)rule.push("추세 환경: "+x.reg);
+    if(rule.length)h+='<div class="note">🧭 '+rule.map(esc).join("<br>🧭 ")+'</div>';
+    $("#ex").innerHTML=h})}
+/* ---- 검색 ---- */
 function norm(s){return String(s||"").toLowerCase().replace(/\s+/g,"")}
+function core(n){return norm(String(n).replace(/\([^)]*\)/g,""))}
 function search(){
-  if(!ST)return;var q=norm($("#q").value),ul=$("#res");$("#detail").innerHTML="";
+  if(!ST)return;var raw=$("#q").value,q=norm(raw),ul=$("#res");$("#detail").innerHTML="";
   if(!q){ul.innerHTML="";return}
-  var r=ST.items.filter(function(i){return norm(i.t).indexOf(q)===0||norm(i.n).indexOf(q)>=0}).slice(0,12);
-  ul.innerHTML=r.length?r.map(function(x){return li(x)}).join(""):'<li style="cursor:default">찾는 종목이 없어요. 봇이 보는 약 '+ST.items.length+'개 종목 중에서만 찾을 수 있어요.</li>';
-  ul.querySelectorAll("li[data-t]").forEach(function(e){e.addEventListener("click",function(){open(e.dataset.t);ul.innerHTML=""})});
+  var r=ST.items.filter(function(i){return norm(i.t)===q||core(i.n)===q});
+  if(!r.length)r=ST.items.filter(function(i){return norm(i.t).indexOf(q)===0||norm(i.n).indexOf(q)>=0});
+  if(!r.length&&q.length>=4){r=ST.items.filter(function(i){var c=core(i.n);return (c.length>=2&&q.indexOf(c)>=0)||(i.t.length>=3&&new RegExp("(^|[^a-z0-9])"+i.t.toLowerCase().replace(/[^a-z0-9]/g,"")+"($|[^a-z0-9])").test(raw.toLowerCase()))})}
+  if(r.length===1&&(norm(r[0].t)===q||core(r[0].n)===q||q.length>=4)){openStock(r[0].t);return}
+  r=r.slice(0,12);
+  ul.innerHTML=r.length?r.map(li).join(""):'<li class="plain">찾는 종목이 없어요. 봇이 보는 약 '+ST.items.length+'개 종목 중에서만 찾을 수 있어요.</li>';
+  ul.querySelectorAll("li[data-t]").forEach(function(e){e.addEventListener("click",function(){openStock(e.dataset.t)})});
 }
+function renderMy(){
+  var ul=$("#mylist");if(!ST){ul.innerHTML='<li class="plain">불러오는 중…</li>';return}
+  var r=MEM.my.map(function(t){return ST.items.filter(function(i){return i.t===t})[0]}).filter(Boolean);
+  ul.innerHTML=r.length?r.map(li).join(""):'<li class="plain">아직 없어요. 종목 카드에서 ☆ 버튼을 눌러 담아 보세요.</li>';
+  bindList(ul);
+}
+/* ---- 놀이터 ---- */
+function kst(d){var t=new Date((d||new Date()).getTime()+9*3600*1000);return t.toISOString().slice(0,10)}
+function lvl(p){var i=0;LEVELS.forEach(function(l,k){if(p>=l[0])i=k});return i}
+function addPts(n,msgs){var a=lvl(MEM.pts);MEM.pts+=n;var b=lvl(MEM.pts);if(b>a&&msgs)msgs.push("🎉 레벨이 올랐어요! '"+LEVELS[b][1]+"'")}
+function attend(msgs){var t=kst();if(MEM.last===t)return;var y=kst(new Date(Date.now()-86400000));MEM.streak=(MEM.last===y)?MEM.streak+1:1;MEM.last=t;MEM.best=Math.max(MEM.best||0,MEM.streak);
+  if(BONUS[MEM.streak]){msgs.push("🔥 "+MEM.streak+"일 연속 출석이에요! 보너스 +"+BONUS[MEM.streak]+"점");addPts(BONUS[MEM.streak],msgs)}}
+function myBox(){var i=lvl(MEM.pts),nx=LEVELS[i+1];var done=Object.keys(MEM.qdone).length,okq=Object.keys(MEM.qdone).filter(function(k){return MEM.qdone[k].ok}).length;
+  var pr=(MEM.preds||[]).filter(function(p){return p.res==="win"||p.res==="lose"}),pw=pr.filter(function(p){return p.res==="win"}).length;
+  return '<h2>🎮 내 기록</h2><div class="lvl"><b style="font-size:20px">'+esc(LEVELS[i][1])+'</b><span class="mute">'+MEM.pts+'점'+(nx?' · 다음 레벨까지 '+(nx[0]-MEM.pts)+'점':' · 최고 레벨')+'</span></div>'+
+   '<div class="row" style="margin-top:10px"><div class="stat"><span>연속 출석</span><b>🔥 '+(MEM.streak||0)+'일</b></div><div class="stat"><span>퀴즈 정답</span><b>'+okq+' / '+done+'</b></div><div class="stat"><span>예측 적중</span><b>'+(pr.length?pw+' / '+pr.length:'-')+'</b></div></div>'}
+function renderTodayPlay(){
+  var q=todayQuiz();var d=q&&MEM.qdone[q.id];
+  $("#todayplay").innerHTML='<h2>🎮 오늘의 놀이</h2><p>'+(q?(d?'오늘의 퀴즈를 풀었어요. 🔥 연속 '+(MEM.streak||0)+'일':'오늘의 퀴즈가 기다리고 있어요.'):'퀴즈를 불러오는 중이에요.')+'</p><button class="btn" id="goPlay">놀이터 가기</button>';
+  $("#goPlay").addEventListener("click",function(){tab("play");window.scrollTo(0,0)});
+}
+function todayQuiz(){if(!QZ||!D)return null;var id=D.quiz_id;var l=QZ.items.filter(function(x){return x.id===id})[0];return l||QZ.items[Math.floor(Date.now()/86400000)%QZ.items.length]}
+function renderPlay(){$("#me").innerHTML=myBox();renderQuiz();renderPred()}
+function renderQuiz(){
+  var q=todayQuiz(),el=$("#quiz");if(!q){el.innerHTML='<h2>📝 오늘의 퀴즈</h2><p class="mute">불러오는 중…</p>';return}
+  var d=MEM.qdone[q.id],marks="①②③④";
+  el.innerHTML='<h2>📝 오늘의 퀴즈 <span class="tag">'+esc(q.cat)+'</span></h2><p><b>Q. '+esc(q.q)+'</b></p>'+q.opts.map(function(o,i){
+    var c=d?(i===q.a?" ok":(i===d.pick?" no":"")):"";return '<button class="opt'+c+'" data-i="'+i+'"'+(d?" disabled":"")+'>'+marks[i]+' '+esc(o)+'</button>'}).join("")+
+    (d?'<div class="note"><b>'+(d.ok?"정답이에요! +"+PTS_OK+"점":"아쉬워요. +"+PTS_NO+"점")+'</b><br>'+esc(q.why)+(q.bot?'<br><span class="mute">🤖 '+esc(q.bot)+'</span>':'')+'</div>'+(d.msgs&&d.msgs.length?'<div class="note">'+d.msgs.map(esc).join("<br>")+'</div>':''):'');
+  if(!d)el.querySelectorAll(".opt").forEach(function(b){b.addEventListener("click",function(){
+    var i=+b.dataset.i,ok=i===q.a,msgs=[];attend(msgs);addPts(ok?PTS_OK:PTS_NO,msgs);MEM.qdone[q.id]={pick:i,ok:ok,at:kst(),msgs:msgs};save();renderPlay();renderTodayPlay()})});
+}
+function nextBiz(ds){var d=new Date(ds+"T00:00:00Z");do{d=new Date(d.getTime()+86400000)}while(d.getUTCDay()===0||d.getUTCDay()===6);return d.toISOString().slice(0,10)}
+function settle(){
+  if(!NS)return;var rows=NS.rows||{},ds=Object.keys(rows).sort(),ch=false;
+  (MEM.preds||[]).forEach(function(p){if(p.res)return;
+    if(rows[p.target]!=null){var up=rows[p.target]>p.base;p.res=((p.dir==="up")===up)?"win":"lose";p.close=rows[p.target];ch=true;
+      var msgs=[];attend(msgs);addPts(p.res==="win"?PTS_OK:PTS_NO,msgs);p.msgs=msgs}
+    else if(ds.length&&ds[ds.length-1]>p.target){p.res="void";ch=true}});
+  if(ch)save();
+}
+function renderPred(){
+  var el=$("#pred");if(!NS){el.innerHTML='<h2>🔮 오늘 밤 나스닥</h2><p class="mute">불러오는 중…</p>';return}
+  settle();var rows=NS.rows||{},ds=Object.keys(rows).sort(),last=ds[ds.length-1],tg=last?nextBiz(last):null;
+  var mine=(MEM.preds||[]).filter(function(p){return p.target===tg})[0];
+  var hist=(MEM.preds||[]).slice(-5).reverse().map(function(p){return '<li class="plain"><span class="nm">'+esc(p.target.slice(5))+' · '+(p.dir==="up"?"상승":"하락")+' 예측<small>'+(p.res==="win"?"✅ 맞혔어요 (종가 "+p.close+")":p.res==="lose"?"❌ 빗나갔어요 (종가 "+p.close+")":p.res==="void"?"휴장이라 무효예요":"결과 대기 중")+'</small></span></li>'}).join("");
+  el.innerHTML='<h2>🔮 오늘 밤 나스닥</h2><p>나스닥100(QQQ)이 <b>'+(tg?esc(tg.slice(5))+' 미국 장</b>에서':'다음 장에서</b>')+' 전 거래일 종가'+(last?'('+rows[last]+')':'')+'보다 오를까요, 내릴까요?</p>'+
+   (mine?'<div class="note">'+(mine.dir==="up"?"📈 상승":"📉 하락")+'으로 예측했어요. 장이 끝난 뒤 결과가 반영돼요.</div>':'<button class="btn" id="pUp">📈 오른다</button><button class="btn ghost" id="pDn">📉 내린다</button>')+
+   (hist?'<ul class="res" style="margin-top:12px">'+hist+'</ul>':'')+'<p class="mute">재미로 하는 예측이에요. 투자 판단 근거가 아니에요.</p>';
+  function vote(dir){var msgs=[];MEM.preds=(MEM.preds||[]);MEM.preds.push({target:tg,dir:dir,base:rows[last],at:kst()});save();renderPlay()}
+  if(!mine&&tg){$("#pUp").addEventListener("click",function(){vote("up")});$("#pDn").addEventListener("click",function(){vote("down")})}
+}
+/* ---- 성적표 ---- */
 function renderPerf(){
-  var p=D.perf||{},k=p.kinds||{},el=$("#perf");
-  var first=p.first_r3_date;
+  var p=D.perf||{},k=p.kinds||{},el=$("#perf"),first=p.first_r3_date;
   var rows=Object.keys(k).map(function(n){var v=k[n];return '<tr><td>'+esc(n)+'</td><td class="r">'+v.n+'</td><td class="r '+cls(v.avg)+'">'+pct(v.avg)+'</td><td class="r">'+(v.plus_pct==null?"-":v.plus_pct.toFixed(0)+"%")+'</td><td class="r">'+v.brk+'</td></tr>'}).join("");
   el.innerHTML='<h2>신호 성적표</h2><p class="mute">'+esc(p.first_bar||"")+' ~ '+esc(p.last_bar||"")+' · 신호 '+p.n+'건 · 틀린 신호도 모두 포함</p>'+
    '<div class="row"><div class="stat"><span>평균 수익률</span><b class="'+cls(p.avg)+'">'+pct(p.avg)+'</b></div>'+
@@ -175,7 +324,10 @@ function renderPerf(){
    '<div class="stat"><span>같은 기간 S&amp;P500</span><b class="'+cls(p.spy_avg)+'">'+pct(p.spy_avg)+'</b></div></div>'+
    '<div class="note"><b>솔직하게 말씀드려요.</b> 지금까지 신호의 평균 수익률은 마이너스이고, 같은 기간 시장보다도 낮아요. 이 봇은 3~6개월 보유를 기준으로 만들었는데 지금 신호 대부분은 아직 3개월이 지나지 않았어요'+(first?' (첫 3개월 경과일 '+esc(first)+')':'')+'. 3개월·6개월 결과가 쌓이면 이 표에 그대로 더할게요.</div>'+
    '<table><thead><tr><th>종류</th><th class="r">건수</th><th class="r">평균</th><th class="r">수익 비율</th><th class="r">방어선 이탈</th></tr></thead><tbody>'+rows+'</tbody></table>'+
-   '<details><summary>계산 방식</summary><p class="mute">신호가 뜬 날 기준가에서 지금(방어선을 이탈했다면 이탈 시점)까지의 변화율이에요. 수수료·세금·환율은 반영하지 않은 단순 계산이에요. 방어선 이탈 '+p.brk+'건은 이탈 시점의 수익률로 고정돼요.</p></details>';
+   (p.pm&&p.pm.n?'<div class="note">💰 신호가 뜰 때마다 100만 원씩 샀다면: 지금 합계 <b class="'+cls(p.pm.pnl)+'">'+pct(p.pm.pct)+'</b> (같은 기간 S&amp;P500에 넣었다면 '+pct(p.pm.spy_pct)+'). 수수료·세금·환율은 반영하지 않은 단순 계산이에요.</div>':'')+
+   '<div><button class="btn ghost" id="bScore">📤 성적표 이미지 저장</button></div>'+
+   '<details><summary>계산 방식</summary><p class="mute">신호가 뜬 날 기준가에서 지금(방어선을 이탈했다면 이탈 시점)까지의 변화율이에요. 방어선 이탈 '+p.brk+'건은 이탈 시점의 수익률로 고정돼요.</p></details>';
+  $("#bScore").addEventListener("click",scoreCard);
   var tb=$("#ledger tbody");tb.innerHTML="";shown=0;more();
 }
 function more(){
@@ -185,11 +337,48 @@ function more(){
   shown=end;$("#more").style.display=shown<L.length?"inline-block":"none";
 }
 $("#more").addEventListener("click",more);
+/* ---- 배우기 ---- */
+function renderLearn(){
+  if(GD)$("#guide").innerHTML=GD.pages.map(function(p,i){return '<details'+(i===0?' open':'')+'><summary><b>'+esc(p.title)+'</b></summary><p>'+rich(p.body)+'</p></details>'}).join("");
+  gloss();
+}
+function gloss(){
+  if(!GL)return;var q=norm($("#gq").value);
+  var r=GL.items.filter(function(x){return !q||norm(x.term).indexOf(q)>=0||norm(x.short).indexOf(q)>=0});
+  $("#gl").innerHTML=r.map(function(x){return '<details><summary><b>'+esc(x.term)+'</b> <span class="mute">'+esc(x.short)+'</span></summary><p>'+esc(x.easy)+'</p>'+(x.bot?'<p class="mute">🤖 '+esc(x.bot)+'</p>':'')+'</details>'}).join("")||'<p class="mute">찾는 용어가 없어요.</p>';
+}
+$("#gq").addEventListener("input",gloss);
+/* ---- 이미지 카드 ---- */
+function wrapText(g,t,x,y,mw,lh){var line="",out=y;for(var i=0;i<t.length;i++){var s=line+t[i];if(g.measureText(s).width>mw&&line){g.fillText(line,x,out);line=t[i];out+=lh}else line=s}if(line){g.fillText(line,x,out);out+=lh}return out}
+function saveCanvas(cv,name){
+  cv.toBlob(function(b){if(!b)return;var f=new File([b],name,{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[f]})&&/Mobi|Android/i.test(navigator.userAgent)){navigator.share({files:[f],title:"레버가치 저점반전 신호"}).catch(function(){})}
+    else{var a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000)}},"image/png");
+}
+function baseCard(){var cv=document.createElement("canvas");cv.width=1080;cv.height=1350;var g=cv.getContext("2d");g.fillStyle="#0f766e";g.fillRect(0,0,1080,1350);g.fillStyle="#fff";g.fillRect(40,40,1000,1270);
+  g.fillStyle="#0f766e";g.font="bold 34px sans-serif";g.fillText("레버가치 저점반전 신호",80,115);return [cv,g]}
+function foot(g){g.fillStyle="#667085";g.font="26px sans-serif";g.fillText("levergachi.github.io · 참고 정보예요, 매수·매도 권유가 아니에요",80,1265)}
+function stockCard(x){
+  var a=baseCard(),cv=a[0],g=a[1];g.fillStyle="#17202a";g.font="bold 64px sans-serif";g.fillText(x.n,80,230);
+  g.font="46px sans-serif";g.fillText(x.l+" "+x.v,80,320);g.fillStyle="#475467";g.font="36px sans-serif";var y=wrapText(g,x.x,80,390,920,50);
+  y+=30;x.it.forEach(function(it,i){g.fillStyle=x.ok[i]?"#15803d":"#98a2b3";g.font="bold 44px sans-serif";g.fillText((x.ok[i]?"✔ ":"▫ ")+it[0],80,y+60);g.fillStyle="#475467";g.font="32px sans-serif";g.fillText(it[1]?it[1].slice(0,30):"",110,y+104);y+=130});
+  g.fillStyle="#17202a";g.font="bold 40px sans-serif";g.fillText(x.g+" "+(x.s==null?"":x.s.toFixed(1))+"점",80,Math.min(y+70,1210));foot(g);saveCanvas(cv,"levergachi-"+x.t+".png")}
+function scoreCard(){
+  var p=D.perf,a=baseCard(),cv=a[0],g=a[1];g.fillStyle="#17202a";g.font="bold 64px sans-serif";g.fillText("신호 성적표",80,230);
+  g.fillStyle="#667085";g.font="32px sans-serif";g.fillText((p.first_bar||"")+" ~ "+(p.last_bar||"")+" · 신호 "+p.n+"건 · 틀린 신호 포함",80,290);
+  var items=[["평균 수익률",pct(p.avg)],["중앙값",pct(p.med)],["수익 중인 신호",(p.plus_pct==null?"-":p.plus_pct.toFixed(0)+"%")],["같은 기간 S&P500",pct(p.spy_avg)]];
+  items.forEach(function(it,i){var x=80+(i%2)*480,y=360+Math.floor(i/2)*210;g.fillStyle="#eef2f6";g.fillRect(x,y,440,180);g.fillStyle="#667085";g.font="32px sans-serif";g.fillText(it[0],x+30,y+60);g.fillStyle="#17202a";g.font="bold 64px sans-serif";g.fillText(it[1],x+30,y+140)});
+  g.fillStyle="#475467";g.font="34px sans-serif";var y=wrapText(g,"아직 3개월이 지나지 않은 신호가 대부분이에요. 맞은 것도 틀린 것도 그대로 공개해요.",80,860,920,50);foot(g);saveCanvas(cv,"levergachi-score.png")}
+/* ---- 시작 ---- */
 $("#q").addEventListener("input",search);
-get("data.json").then(function(d){D=d;renderToday();renderPerf();$("#upd").textContent="자료 기준 "+(d.updated||"");}).catch(function(){
+get("data.json").then(function(d){D=d;renderToday();renderPerf();renderPlay();$("#upd").textContent="자료 기준 "+(d.updated||"")}).catch(function(){
   ["#weather","#sigs","#near","#perf"].forEach(function(s){$(s).innerHTML='<p class="mute">자료를 불러오지 못했어요. 잠시 뒤에 새로고침해 주세요.</p>'})});
-get("stocks.json").then(function(s){ST=s;search()}).catch(function(){});
-var h=(location.hash||"").slice(1);if(["today","find","score","start"].indexOf(h)>=0)tab(h);
+get("stocks.json").then(function(s){ST=s;search();renderMy()}).catch(function(){});
+get("quiz.json").then(function(q){QZ=q;if(D){renderTodayPlay();renderQuiz()}}).catch(function(){});
+get("nasdaq.json").then(function(n){NS=n;renderPred()}).catch(function(){});
+get("guide.json").then(function(g){GD=g;renderLearn()}).catch(function(){});
+get("glossary.json").then(function(g){GL=g;renderLearn()}).catch(function(){});
+var h=(location.hash||"").slice(1);if(["today","find","my","play","score","learn","start"].indexOf(h)>=0)tab(h);
 })();
 </script>
 </body>
