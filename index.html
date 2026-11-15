@@ -146,6 +146,7 @@ footer{margin-top:28px;color:var(--mute);font-size:13px}
 
 <section id="score">
 <div class="card" id="perf"><h2>신호 성적표</h2><p class="mute">불러오는 중…</p></div>
+<div class="card" id="sigled" style="display:none"></div>
 <div class="card"><h2>신호별 내역</h2><p class="mute">최신순이에요. 수익률은 신호가 뜬 날 기준가 대비 지금(또는 방어선 이탈 시점)까지예요.</p>
 <div class="fil" id="lfil"></div><div style="overflow-x:auto"><table id="ledger"><thead><tr><th>#</th><th>종목</th><th>신호일</th><th class="r">수익률</th><th>상태</th></tr></thead><tbody></tbody></table></div>
 <button class="btn ghost" id="more" style="margin-top:12px;display:none">더 보기</button></div>
@@ -253,7 +254,7 @@ function cardHTML(t){var x=findS(t);if(!x)return"";var mine=MEM.my.indexOf(t)>=0
    '<p class="mute">'+esc(x.k)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점'+(x.p!=null?' · 기준 가격 '+x.p:'')+(x.dd!=null?' · 고점 대비 '+x.dd+'%':'')+'</p><div class="cond">'+bars(x)+'</div>'+
    (x.k==="레버리지"?'<div class="note warn">⚠️ 레버리지 상품이에요. 오르내림만 반복해도 원금이 줄어드는 구조라 초보자에게는 어려운 상품이에요.</div>':'')+
    '<label class="cmp"><input type="checkbox" data-a="ck"'+(CK[t]===false?'':' checked')+'> 비교에 넣기</label>'+
-   '<div><button class="btn ghost" data-a="chart">📈 차트</button><button class="btn ghost" data-a="pro">🔬 전문가 보기</button><button class="btn ghost" data-a="my">'+(mine?'⭐ 담았어요 (빼기)':'☆ 내 종목에 담기')+'</button><button class="btn ghost" data-a="card">📤 카드 이미지</button></div>'+
+   '<div><button class="btn ghost" data-a="chart">📈 차트</button><button class="btn ghost" data-a="pro">🔬 전문가 보기</button><button class="btn ghost" data-a="my">'+(mine?'⭐ 담았어요 (빼기)':'☆ 내 종목에 담기')+'</button><button class="btn ghost" data-a="card">📤 카드 이미지</button>'+(D&&D.pg&&D.pg.indexOf(t)>=0?'<a class="btn ghost" href="s/'+encodeURIComponent(t)+'/" style="text-decoration:none">📄 종목 페이지</a>':'')+'</div>'+
    '<div class="ex"></div><p class="mute">조건이 맞았다는 뜻이지 사라는 뜻이 아니에요. 판단과 책임은 본인에게 있어요.</p></div>';
 }
 function renderPanel(){
@@ -501,6 +502,8 @@ get("data.json").then(function(d){D=d;renderToday();renderPerf();renderPlay();re
 get("stocks.json").then(function(s){ST=s;search();renderMy();renderDist();initHash()}).catch(function(){});
 get("quiz.json").then(function(q){QZ=q;if(D){renderTodayPlay();renderQuiz()}}).catch(function(){});
 get("nasdaq.json").then(function(n){NS=n;renderPred()}).catch(function(){});
+get("signals.json").then(function(g){var el=$("#sigled");if(!g||!g.items)return;el.style.display="block";
+  el.innerHTML='<h2>📜 신호 원장</h2><p>공개 원장 시작 '+esc(g.start)+' · 전체 '+g.n+'건 (이관 '+g.n_mig+'건 · 공개 '+(g.n-g.n_mig)+'건)</p><p class="mute">'+esc(g.about)+'</p><p><a class="btn ghost" href="signals.json" style="text-decoration:none">원장 원본(signals.json)</a>'+(g.history?'<a class="btn ghost" href="'+esc(g.history)+'" rel="noopener" style="text-decoration:none">GitHub 변경 이력</a>':'')+'</p>'}).catch(function(){});
 get("guide.json").then(function(g){GD=g;renderLearn()}).catch(function(){});
 get("glossary.json").then(function(g){GL=g;renderLearn()}).catch(function(){});
 var h0=(location.hash||"").slice(1);if(["today","find","my","play","score","learn","start"].indexOf(h0)>=0)tab(h0);
