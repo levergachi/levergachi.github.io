@@ -14,6 +14,29 @@
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 -apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Noto Sans KR","Malgun Gothic",sans-serif}
 .wrap{max-width:760px;margin:0 auto;padding:0 16px 72px}
+@media(min-width:1000px){.wrap{max-width:1200px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 420px;gap:22px;align-items:start}}
+.who{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin:0 0 8px}.who b{font-size:15px;background:var(--brand);color:var(--brand-ink);border-radius:8px;padding:2px 10px}.who span{color:var(--mute);font-size:13px}
+.links{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 12px}.lk{display:inline-block;text-decoration:none;font-weight:700;font-size:15px;padding:9px 14px;border-radius:12px;border:2px solid var(--brand);color:var(--ink);background:var(--card)}.lk.pri{background:var(--brand);color:var(--brand-ink)}
+.gl{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:12px 0 0;font-size:14px}.gl .gp{display:inline-block;margin:2px 6px 2px 0;white-space:nowrap}
+.gb{display:inline-block;min-width:28px;text-align:center;border-radius:7px;font-weight:700;font-size:13px;padding:1px 7px;color:#fff;background:#98a2b3}
+.g-S{background:#7c3aed}.g-A{background:#0f766e}.g-B{background:#b45309}.g-C{background:#667085}.g-D{background:#98a2b3}
+.sbar{height:5px;border-radius:99px;background:var(--line);overflow:hidden;margin-top:5px;max-width:190px}.sbar i{display:block;height:100%;background:var(--brand)}
+.dist{display:flex;height:22px;border-radius:8px;overflow:hidden;margin:8px 0 4px}.dist i{display:block;color:#fff;font:700 11px/22px sans-serif;text-align:center;font-style:normal;overflow:hidden}
+#panel{display:none}
+#panel .ph{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 10px}
+#panel .ph b{font-size:15px}
+.pcard{position:relative}.pcard .x{position:absolute;right:10px;top:8px;border:0;background:var(--chip);color:var(--ink);width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer}
+.pcard h2{padding-right:34px}.pcard label.cmp{display:inline-flex;gap:6px;align-items:center;font-size:14px;margin:4px 0}
+.pempty{color:var(--mute);font-size:14px}
+.cmpt{overflow-x:auto}.cmpt td,.cmpt th{white-space:nowrap}
+.sw{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:5px}
+.fil{margin:8px 0}.fil .chip[aria-pressed="true"]{background:var(--brand);color:var(--brand-ink)}
+.stale{background:#fef3c7;color:#92400e;border-radius:10px;padding:8px 12px;font-size:14px;margin:8px 0}
+@media(prefers-color-scheme:dark){.stale{background:#3b2f0a;color:#fde68a}}
+@media(min-width:1000px){#panel{display:block;position:sticky;top:64px;max-height:calc(100vh - 80px);overflow-y:auto;padding-bottom:20px}#panel .ph .back{display:none}}
+@media(max-width:999px){#panel{position:fixed;left:0;right:0;bottom:0;max-height:84vh;overflow-y:auto;background:var(--bg);border-radius:18px 18px 0 0;padding:12px 14px 28px;box-shadow:0 -8px 30px rgba(0,0,0,.28);z-index:30;transform:translateY(110%);transition:transform .2s;display:block;visibility:hidden}
+ body.pl-open #panel{transform:none;visibility:visible}.scrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:25;display:none}body.pl-open .scrim{display:block}}
+
 header{padding:26px 0 8px}
 h1{font-size:24px;line-height:1.3;margin:0 0 6px}
 .sub{color:var(--mute);margin:0}
@@ -66,8 +89,13 @@ footer{margin-top:28px;color:var(--mute);font-size:13px}
 <body>
 <div class="wrap">
 <header>
+<div class="who"><b>레버가치전문가</b><span>직접 만들고 직접 운영하는 무료 신호 봇</span></div>
+<div class="links"><a class="lk pri" href="https://blog.naver.com/leverage_expert" target="_blank" rel="noopener">📝 네이버 블로그</a><a class="lk" href="https://open.kakao.com/o/gq92qKDi" target="_blank" rel="noopener">💬 오픈채팅</a><a class="lk" href="https://t.me/lever_stock_bot?start=web" target="_blank" rel="noopener">✈️ 텔레그램 봇</a></div>
 <h1>레버가치 저점반전 신호</h1>
 <p class="sub">싸졌고, 회사가 튼튼하고, 다시 오르기 시작한 종목만 골라 알려 주는 무료 봇이에요. 맞은 신호도 틀린 신호도 그대로 공개해요.</p>
+<div class="gl" id="gradeline"><b>등급</b> 100점 만점 <span class="gp"><span class="gb g-S">S</span> 72점↑</span><span class="gp"><span class="gb g-A">A</span> 60점↑</span><span class="gp"><span class="gb g-B">B</span> 45점↑</span><span class="gp"><span class="gb g-C">C</span> 30점↑</span><span class="gp"><span class="gb g-D">D</span> 그 아래</span>
+<details><summary>기준 자세히</summary><p class="mute">점수 = 눌림목 35점 + 회사 체력 40점 + 반등 신호 25점. <b>A등급 이상</b>이면서 세 조건이 각자 최소 기준을 넘으면 '신호'로 알려요. ETF는 기준이 조금 낮아요(S 56·A 46·B 35·C 23). 같은 등급 안에서는 +/-로 위아래를 나눠요.</p></details></div>
+<div id="stale"></div>
 </header>
 <nav role="tablist" aria-label="메뉴">
 <button role="tab" aria-selected="true" data-t="today">오늘</button>
@@ -79,9 +107,11 @@ footer{margin-top:28px;color:var(--mute);font-size:13px}
 <button role="tab" aria-selected="false" data-t="start">시작하기</button>
 </nav>
 
+<div class="layout"><div class="main">
 <section id="today" class="on">
 <div class="card" id="weather"><h2>시장 날씨</h2><p class="mute">불러오는 중…</p></div>
 <div class="card" id="brief"></div>
+<div class="card" id="dist"></div>
 <div class="card" id="sigs"><h2>지금 신호가 켜진 종목</h2><p class="mute">불러오는 중…</p></div>
 <div class="card" id="near"><h2>문턱까지 온 종목</h2><p class="mute">불러오는 중…</p></div>
 <div class="card" id="hot" style="display:none"></div>
@@ -98,12 +128,13 @@ footer{margin-top:28px;color:var(--mute);font-size:13px}
 <section id="find">
 <input id="q" type="search" placeholder="종목 이름이나 티커, 문장도 돼요 (예: 엔비디아 사도 돼?)" autocomplete="off" aria-label="종목 검색">
 <ul class="res" id="res"></ul>
-<div id="detail"></div>
+<p class="mute" style="margin-top:10px">종목을 누르면 오른쪽(휴대폰은 아래)에 정보가 열려요. 최대 4개까지 쌓아 두고 비교할 수 있어요.</p>
 </section>
 
 <section id="my">
-<div class="card"><h2>⭐ 내 종목</h2><p class="mute">종목 카드의 ⭐ 버튼으로 담아요. 이 기기의 브라우저에만 저장돼요. 다른 기기와는 이어지지 않아요.</p>
-<ul class="res" id="mylist"></ul></div>
+<div class="card"><h2>⭐ 내 종목</h2><p class="mute">종목 카드의 ⭐ 버튼으로 담아요. 이 폰·이 브라우저에 계속 저장돼요(로그인 필요 없음). 다른 기기로 옮기려면 아래 '내 종목 링크'를 쓰세요.</p>
+<div id="mybanner"></div><ul class="res" id="mylist"></ul>
+<div id="mytools"></div></div>
 </section>
 
 <section id="play">
@@ -116,7 +147,7 @@ footer{margin-top:28px;color:var(--mute);font-size:13px}
 <section id="score">
 <div class="card" id="perf"><h2>신호 성적표</h2><p class="mute">불러오는 중…</p></div>
 <div class="card"><h2>신호별 내역</h2><p class="mute">최신순이에요. 수익률은 신호가 뜬 날 기준가 대비 지금(또는 방어선 이탈 시점)까지예요.</p>
-<div style="overflow-x:auto"><table id="ledger"><thead><tr><th>#</th><th>종목</th><th>신호일</th><th class="r">수익률</th><th>상태</th></tr></thead><tbody></tbody></table></div>
+<div class="fil" id="lfil"></div><div style="overflow-x:auto"><table id="ledger"><thead><tr><th>#</th><th>종목</th><th>신호일</th><th class="r">수익률</th><th>상태</th></tr></thead><tbody></tbody></table></div>
 <button class="btn ghost" id="more" style="margin-top:12px;display:none">더 보기</button></div>
 </section>
 
@@ -133,15 +164,18 @@ footer{margin-top:28px;color:var(--mute);font-size:13px}
 <p><a class="btn" href="https://open.kakao.com/o/gq92qKDi" rel="noopener">가입 방법 보기 (오픈채팅)</a></p>
 <div class="note">가입 암호가 필요해요. 카카오톡 오픈채팅 '레버가치'에서 받으세요. 암호는 텔레그램 봇 대화창에 그대로 보내면 돼요.</div></div>
 <div class="card"><h2>이렇게 달라요</h2>
-<p>· 신호는 드물어요. 조건이 다 맞을 때만 보내요.<br>· 신호가 틀린 것도 성적표에 그대로 남겨요.<br>· 매수 권유가 아니에요. 조건이 맞았다는 알림이에요.<br>· 3~6개월 보유, 나눠 사기, 방어선을 기준으로 삼아요.</p></div>
+<p>· 신호는 드물어요. 조건이 다 맞을 때만 보내요.<br>· 신호가 틀린 것도 성적표에 그대로 남겨요.<br>· 매수 권유가 아니에요. 조건이 맞았다는 알림이에요.<br>· 얼마를 언제 살지는 본인이 판단해요. 봇은 조건이 맞았다는 것만 알려요.</p></div>
 </section>
 
+</div>
+<aside id="panel" aria-label="종목 정보"></aside></div>
+<div class="scrim" id="scrim"></div>
 <footer>참고 정보예요 · 매수·매도 권유가 아니에요 · 투자 판단과 책임은 본인에게 있어요.<br><span id="upd"></span></footer>
 </div>
 <script>
 (function(){
 "use strict";
-var D=null,ST=null,CH=null,DT=null,QZ=null,GL=null,GD=null,NS=null,shown=0,PAGE=20,CUR=null;
+var D=null,ST=null,CH=null,DT=null,QZ=null,GL=null,GD=null,NS=null,shown=0,PAGE=20,CUR=null,PL=[],CK={},CMPV=false,IMP=[],LF=0;
 var LEVELS=[[0,"씨앗"],[50,"새싹 주린이"],[150,"차트 좀 보는 주린이"],[300,"눌림목 헌터"],[600,"공포에 사는 사람"],[1000,"레버가치 고수"],[2000,"전설의 저점 사냥꾼"]];
 var BONUS={7:20,30:100,100:300},PTS_OK=10,PTS_NO=2;
 function $(s){return document.querySelector(s)}
@@ -158,7 +192,7 @@ function save(){try{localStorage.setItem("lgp1",JSON.stringify(MEM))}catch(e){}}
 function tab(id){
   document.querySelectorAll("section").forEach(function(s){s.classList.toggle("on",s.id===id)});
   document.querySelectorAll("nav button").forEach(function(b){b.setAttribute("aria-selected",b.dataset.t===id?"true":"false")});
-  try{history.replaceState(null,"","#"+id)}catch(e){}
+  try{if(!PL.length)history.replaceState(history.state,"","#"+id)}catch(e){}
   if(id==="my")renderMy();if(id==="play")renderPlay();
 }
 document.querySelectorAll("nav button").forEach(function(b){b.addEventListener("click",function(){tab(b.dataset.t)})});
@@ -173,9 +207,10 @@ function gauge(v){
    '<line x1="'+cx+'" y1="'+cy+'" x2="'+x+'" y2="'+y+'" stroke="currentColor" stroke-width="4" stroke-linecap="round"/><circle cx="'+cx+'" cy="'+cy+'" r="7" fill="currentColor"/>'+
    '<text x="'+cx+'" y="170" text-anchor="middle" font-size="26" font-weight="700" fill="currentColor">'+v.toFixed(0)+'</text></svg>';
 }
-function li(x){return '<li data-t="'+esc(x.t)+'" tabindex="0" role="button"><span style="font-size:22px">'+esc(x.l)+'</span><span class="nm"><b>'+esc(x.n)+'</b><small>'+esc(x.v)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점</small></span></li>'}
+function gl(g){return String(g||"D").charAt(0)}
+function li(x){return '<li data-t="'+esc(x.t)+'" tabindex="0" role="button"><span style="font-size:22px">'+esc(x.l)+'</span><span class="nm"><b>'+esc(x.n)+'</b><small>'+esc(x.v)+'</small>'+(x.s==null?'':'<div class="sbar"><i style="width:'+Math.max(2,Math.min(100,x.s))+'%"></i></div>')+'</span><span style="text-align:right"><span class="gb g-'+gl(x.g)+'">'+esc(x.g)+'</span><small style="display:block">'+(x.s==null?"":x.s.toFixed(1))+'점</small></span></li>'}
 function bindList(root){root.querySelectorAll("li[data-t]").forEach(function(e){
-  function go(){tab("find");openStock(e.dataset.t);window.scrollTo(0,0)}
+  function go(){openStock(e.dataset.t)}
   e.addEventListener("click",go);e.addEventListener("keydown",function(ev){if(ev.key==="Enter"||ev.key===" "){ev.preventDefault();go()}})})}
 function renderToday(){
   var m=D.market||{},w=$("#weather");
@@ -193,7 +228,7 @@ function renderToday(){
   bindList(a);bindList(b);
   var h=D.hot||[],hh=$("#hot");
   if(h.length){hh.style.display="block";hh.innerHTML='<h2>🔥 많이 본 종목</h2><p class="mute">최근 7일 봇에서 많이 조회된 종목이에요. 조회한 사람은 기록하지 않아요.</p>'+h.map(function(x){return '<button class="chip" data-t="'+esc(x.t)+'">'+esc(x.n)+' · '+x.c+'회</button>'}).join("");
-    hh.querySelectorAll("button").forEach(function(e){e.addEventListener("click",function(){tab("find");openStock(e.dataset.t);window.scrollTo(0,0)})})}
+    hh.querySelectorAll("button").forEach(function(e){e.addEventListener("click",function(){openStock(e.dataset.t)})})}
   renderTodayPlay();
 }
 /* ---- 종목 카드 ---- */
@@ -202,28 +237,50 @@ function bars(x){
     var bar=(val!=null&&mx)?'<div class="bar'+(ok?'':' no')+'"><i style="width:'+Math.max(2,Math.min(100,val/mx*100))+'%"></i></div>':'';
     return '<div><span>'+(ok?"✅":"⬜")+'</span><span class="bw"><b>'+esc(it[0])+'</b>'+(val!=null&&mx?' <span class="mute">'+val.toFixed(1)+' / '+mx+(it[4]!=null?' (기준 '+it[4].toFixed(0)+')':'')+'</span>':'')+(it[1]?'<em>'+esc(it[1])+'</em>':'')+bar+'</span></div>'}).join("");
 }
+function findS(t){return ST?ST.items.filter(function(i){return i.t===t})[0]:null}
 function openStock(t){
-  if(!ST)return;var x=ST.items.filter(function(i){return i.t===t})[0];if(!x)return;CUR=x;
-  var mine=MEM.my.indexOf(t)>=0;
-  var h='<div class="card"><h2>'+esc(x.l)+' '+esc(x.n)+'</h2><p><b>'+esc(x.v)+'</b></p><p>'+esc(x.x)+'</p>'+
+  if(!findS(t))return;var i=PL.indexOf(t);if(i>=0)PL.splice(i,1);PL.unshift(t);if(PL.length>4)PL.pop();
+  var had=!!(history.state&&history.state.pl);CMPV=false;
+  try{var st={pl:PL.slice()},u="#s="+PL.join(",");if(had)history.replaceState(st,"",u);else history.pushState(st,"",u)}catch(e){}
+  renderPanel();var P=$("#panel");if(P&&window.innerWidth>=1000)P.scrollTop=0;
+}
+function syncState(){try{if(history.state&&history.state.pl)history.replaceState({pl:PL.slice()},"","#s="+PL.join(","))}catch(e){}}
+function removeCard(t){var i=PL.indexOf(t);if(i>=0)PL.splice(i,1);if(!PL.length){closeAll();return}syncState();renderPanel()}
+function closeAll(){if(history.state&&history.state.pl){history.back()}else{PL=[];CMPV=false;renderPanel()}}
+window.addEventListener("popstate",function(e){var st=e.state;PL=(st&&st.pl)?st.pl.slice():[];CMPV=!!(st&&st.cmp);renderPanel()});
+function cardHTML(t){var x=findS(t);if(!x)return"";var mine=MEM.my.indexOf(t)>=0;
+  return '<div class="card pcard" data-t="'+esc(t)+'"><button class="x" data-a="x" aria-label="닫기">✕</button><h2>'+esc(x.l)+' '+esc(x.n)+' <span class="gb g-'+gl(x.g)+'">'+esc(x.g)+'</span></h2><p><b>'+esc(x.v)+'</b></p><p>'+esc(x.x)+'</p>'+
    '<p class="mute">'+esc(x.k)+' · '+esc(x.g)+' '+(x.s==null?"":x.s.toFixed(1))+'점'+(x.p!=null?' · 기준 가격 '+x.p:'')+(x.dd!=null?' · 고점 대비 '+x.dd+'%':'')+'</p><div class="cond">'+bars(x)+'</div>'+
    (x.k==="레버리지"?'<div class="note warn">⚠️ 레버리지 상품이에요. 오르내림만 반복해도 원금이 줄어드는 구조라 초보자에게는 어려운 상품이에요.</div>':'')+
-   '<div><button class="btn ghost" id="bChart">📈 차트</button><button class="btn ghost" id="bPro">🔬 전문가 보기</button><button class="btn ghost" id="bMy">'+(mine?'⭐ 담았어요 (빼기)':'☆ 내 종목에 담기')+'</button><button class="btn ghost" id="bCard">📤 카드 이미지 저장</button></div>'+
-   '<div id="ex"></div><p class="mute">조건이 맞았다는 뜻이지 사라는 뜻이 아니에요. 판단과 책임은 본인에게 있어요.</p></div>';
-  $("#detail").innerHTML=h;$("#res").innerHTML="";
-  $("#bChart").addEventListener("click",function(){showChart(t)});
-  $("#bPro").addEventListener("click",function(){showPro(t)});
-  $("#bMy").addEventListener("click",function(){toggleMy(t)});
-  $("#bCard").addEventListener("click",function(){stockCard(x)});
+   '<label class="cmp"><input type="checkbox" data-a="ck"'+(CK[t]===false?'':' checked')+'> 비교에 넣기</label>'+
+   '<div><button class="btn ghost" data-a="chart">📈 차트</button><button class="btn ghost" data-a="pro">🔬 전문가 보기</button><button class="btn ghost" data-a="my">'+(mine?'⭐ 담았어요 (빼기)':'☆ 내 종목에 담기')+'</button><button class="btn ghost" data-a="card">📤 카드 이미지</button></div>'+
+   '<div class="ex"></div><p class="mute">조건이 맞았다는 뜻이지 사라는 뜻이 아니에요. 판단과 책임은 본인에게 있어요.</p></div>';
 }
-function toggleMy(t){var i=MEM.my.indexOf(t);if(i>=0)MEM.my.splice(i,1);else MEM.my.push(t);save();openStock(t)}
-function load(name,key,fn){if(window[key])return fn(window[key]);get(name).then(function(d){window[key]=d;fn(d)}).catch(function(){$("#ex").innerHTML='<p class="mute">불러오지 못했어요. 잠시 뒤에 다시 눌러 주세요.</p>'})}
-function showChart(t){
-  $("#ex").innerHTML='<p class="mute">차트를 불러오는 중…</p>';
+function renderPanel(){
+  var P=$("#panel");document.body.classList.toggle("pl-open",PL.length>0);
+  if(!PL.length){P.innerHTML='<div class="card pempty">종목을 누르면 여기에 정보가 열려요.<br>최대 4개까지 쌓아 두고 비교할 수 있어요.</div>';return}
+  var head='<div class="ph"><button class="btn ghost back" data-a="back">← 닫기</button><b>종목 정보 '+PL.length+'/4</b><span>'+(PL.length>=2&&!CMPV?'<button class="btn ghost" data-a="cmp">⚖ 비교하기</button>':'')+'<button class="btn ghost" data-a="close">모두 닫기</button></span></div>';
+  if(CMPV){renderCompare(P,head);return}
+  P.innerHTML=head+PL.map(cardHTML).join("");
+}
+$("#panel").addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b)return;var a=b.dataset.a,c=b.closest(".pcard"),t=c?c.dataset.t:null;
+  if(a==="x")removeCard(t);else if(a==="back"||a==="close")closeAll();
+  else if(a==="cmp"){CMPV=true;try{history.pushState({pl:PL.slice(),cmp:1},"","#s="+PL.join(","))}catch(x){}renderPanel()}
+  else if(a==="cback"){if(history.state&&history.state.cmp)history.back();else{CMPV=false;renderPanel()}}
+  else if(a==="chart")showChart(t,c.querySelector(".ex"));else if(a==="pro")showPro(t,c.querySelector(".ex"));
+  else if(a==="my"){toggleMy(t);b.textContent=MEM.my.indexOf(t)>=0?"⭐ 담았어요 (빼기)":"☆ 내 종목에 담기"}
+  else if(a==="card")stockCard(findS(t))});
+$("#panel").addEventListener("change",function(e){var b=e.target;if(b.dataset&&b.dataset.a==="ck"){CK[b.closest(".pcard").dataset.t]=b.checked}});
+$("#scrim").addEventListener("click",closeAll);
+document.addEventListener("keydown",function(e){if(e.key==="Escape"&&PL.length)closeAll()});
+function toggleMy(t){var i=MEM.my.indexOf(t);if(i>=0)MEM.my.splice(i,1);else MEM.my.push(t);save();if($("#my").classList.contains("on"))renderMy()}
+function load(name,key,fn,el){if(window[key])return fn(window[key]);get(name).then(function(d){window[key]=d;fn(d)}).catch(function(){if(el)el.innerHTML='<p class="mute">불러오지 못했어요. 잠시 뒤에 다시 눌러 주세요.</p>'})}
+function showChart(t,ex){
+  ex.innerHTML='<p class="mute">차트를 불러오는 중…</p>';
   load("charts.json","_CH",function(d){var c=(d.items||{})[t];
-    if(!c||c.p.length<5){$("#ex").innerHTML='<p class="mute">이 종목은 차트 자료가 아직 부족해요.</p>';return}
-    $("#ex").innerHTML='<canvas class="chart" id="cv" role="img" aria-label="최근 '+c.p.length+'거래일 종가"></canvas><p class="mute">최근 '+c.p.length+'거래일 종가'+(c.s?' · 점선은 봇의 방어선 '+c.s:'')+'</p>';
-    draw($("#cv"),c)})}
+    if(!c||c.p.length<5){ex.innerHTML='<p class="mute">이 종목은 차트 자료가 아직 부족해요.</p>';return}
+    ex.innerHTML='<canvas class="chart" role="img" aria-label="최근 '+c.p.length+'거래일 종가"></canvas><p class="mute">최근 '+c.p.length+'거래일 종가'+(c.s?' · 점선은 봇의 방어선 '+c.s:'')+'</p>';
+    draw(ex.querySelector("canvas"),c)},ex)}
 function draw(cv,c){
   var dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*dpr;cv.height=h*dpr;var g=cv.getContext("2d");g.scale(dpr,dpr);
   var cs=getComputedStyle(document.documentElement),ink=cs.getPropertyValue("--mute").trim(),br=cs.getPropertyValue("--brand").trim(),wn=cs.getPropertyValue("--warn").trim();
@@ -236,36 +293,74 @@ function draw(cv,c){
   g.fillStyle=br;g.beginPath();g.arc(X(P.length-1),Y(P[P.length-1]),4,0,7);g.fill();
   g.fillStyle=ink;var d=c.d;[0,Math.floor(d.length/2),d.length-1].forEach(function(i){var s=d[i];s=s.slice(2,4)+"/"+s.slice(4);var tx=Math.max(0,Math.min(w-R-28,X(i)-14));g.fillText(s,tx,h-4)});
 }
-function showPro(t){
-  $("#ex").innerHTML='<p class="mute">불러오는 중…</p>';
-  load("detail.json","_DT",function(d){var x=(d.items||{})[t];if(!x){$("#ex").innerHTML="";return}
+function showPro(t,ex){
+  ex.innerHTML='<p class="mute">불러오는 중…</p>';
+  load("detail.json","_DT",function(d){var x=(d.items||{})[t];if(!x){ex.innerHTML="";return}
     function ul(a){return a&&a.length?'<ul class="why">'+a.map(function(s){return '<li>'+esc(s)+'</li>'}).join("")+'</ul>':'<p class="mute">없음</p>'}
     var h='<div class="note"><b>🧱 눌림목 (35점)</b>'+ul(x.sw)+'<b>💎 펀더멘털 (40점)</b>'+ul(x.fw)+'<b>📈 상승 모멘텀 (25점)</b>'+ul(x.tw)+'</div>';
     if(x.red&&x.red.length)h+='<div class="note warn"><b>⚠️ 주의할 점</b>'+ul(x.red)+'</div>';
     if(x.gm&&x.gm.length)h+='<div class="note"><b>알림이 보류되는 이유</b>'+ul(x.gm)+'</div>';
-    var rule=[];if(x.stop)rule.push("방어선 "+x.stop);if(x.pz)rule.push("한 종목 계좌의 약 "+x.pz+"%");
+    var rule=[];if(x.stop)rule.push("방어선 "+x.stop);
     if(x.earn)rule.push(x.earn);if(x.ana)rule.push(x.ana);if(x.tgt)rule.push("애널리스트 목표가 "+x.tgt);if(x.reg)rule.push("추세 환경: "+x.reg);
     if(rule.length)h+='<div class="note">🧭 '+rule.map(esc).join("<br>🧭 ")+'</div>';
-    $("#ex").innerHTML=h})}
+    ex.innerHTML=h},ex)}
+/* ---- 비교 ---- */
+var COL=["#0f766e","#c2410c","#7c3aed","#1d4ed8"];
+function renderCompare(P,head){
+  var xs=PL.filter(function(t){return CK[t]!==false}).map(findS).filter(Boolean);
+  if(xs.length<2){P.innerHTML=head+'<div class="card"><p>비교하려면 종목을 2개 이상 "비교에 넣기"로 체크해 주세요.</p><button class="btn" data-a="cback">← 돌아가기</button></div>';return}
+  var th=xs.map(function(x,i){return '<th><span class="sw" style="background:'+COL[i]+'"></span>'+esc(x.n)+'</th>'}).join("");
+  function row(nm,f){return '<tr><td>'+nm+'</td>'+xs.map(function(x){return '<td>'+f(x)+'</td>'}).join("")+'</tr>'}
+  var rs=[row("등급·점수",function(x){return '<span class="gb g-'+gl(x.g)+'">'+esc(x.g)+'</span> '+(x.s==null?"":x.s.toFixed(1))+'점'}),row("판정",function(x){return esc(x.l)+" "+esc(x.v)}),row("종류",function(x){return esc(x.k)}),row("고점 대비",function(x){return x.dd==null?"-":x.dd+"%"})];
+  xs[0].it.forEach(function(it,k){rs.push(row(esc(it[0]),function(x){var y=x.it[k];if(!y)return "-";return (x.ok[k]?"✅ ":"⬜ ")+(y[2]==null?"":y[2].toFixed(1)+" / "+y[3])}))});
+  P.innerHTML=head+'<div class="card"><h2>⚖ 종목 비교</h2><div class="cmpt"><table><thead><tr><th></th>'+th+'</tr></thead><tbody>'+rs.join("")+'</tbody></table></div><h2 style="margin-top:14px">최근 흐름 (시작을 100으로)</h2><div id="cmpch"><p class="mute">차트를 불러오는 중…</p></div><button class="btn" data-a="cback">← 돌아가기</button></div>';
+  load("charts.json","_CH",function(d){var el=$("#cmpch");if(!el)return;var ser=xs.map(function(x,i){var c=(d.items||{})[x.t];return c&&c.p.length>=5?{n:x.n,d:c.d,p:c.p,c:COL[i]}:null}).filter(Boolean);
+    if(ser.length<2){el.innerHTML='<p class="mute">차트 자료가 부족한 종목이 있어요.</p>';return}
+    el.innerHTML='<canvas class="chart" role="img" aria-label="종목 비교 차트"></canvas><p class="mute">'+ser.map(function(s){return '<span class="sw" style="background:'+s.c+'"></span>'+esc(s.n)}).join(" &nbsp; ")+'</p>';drawMulti(el.querySelector("canvas"),ser)},$("#cmpch"));
+}
+function drawMulti(cv,ser){
+  var common=ser[0].d.filter(function(x){return ser.every(function(s){return s.d.indexOf(x)>=0})});
+  var rows=ser.map(function(s){var idx=common.length>=10?common.map(function(x){return s.p[s.d.indexOf(x)]}):s.p.slice(-Math.min.apply(null,ser.map(function(q){return q.p.length})));return idx.map(function(v){return v/idx[0]*100})});
+  var n=rows[0].length,dates=common.length>=10?common:ser[0].d.slice(-n);
+  var dpr=window.devicePixelRatio||1,w=cv.clientWidth,h=cv.clientHeight;cv.width=w*dpr;cv.height=h*dpr;var g=cv.getContext("2d");g.scale(dpr,dpr);
+  var ink=getComputedStyle(document.documentElement).getPropertyValue("--mute").trim();
+  var all=[].concat.apply([],rows),mn=Math.min.apply(null,all),mx=Math.max.apply(null,all),pad=(mx-mn)*.08||1;mn-=pad;mx+=pad;
+  var L=8,R=40,T=8,B=20,X=function(i){return L+(w-L-R)*i/(n-1)},Y=function(v){return T+(h-T-B)*(1-(v-mn)/(mx-mn))};
+  g.font="11px sans-serif";g.fillStyle=ink;g.strokeStyle=ink;g.lineWidth=.5;
+  for(var k=0;k<4;k++){var v=mn+(mx-mn)*k/3,y=Y(v);g.globalAlpha=.25;g.beginPath();g.moveTo(L,y);g.lineTo(w-R,y);g.stroke();g.globalAlpha=1;g.fillText(v.toFixed(0),w-R+4,y+4)}
+  g.globalAlpha=.5;g.setLineDash([3,3]);g.beginPath();g.moveTo(L,Y(100));g.lineTo(w-R,Y(100));g.stroke();g.setLineDash([]);g.globalAlpha=1;
+  rows.forEach(function(r,j){g.strokeStyle=ser[j].c;g.lineWidth=2;g.beginPath();r.forEach(function(v,i){i?g.lineTo(X(i),Y(v)):g.moveTo(X(i),Y(v))});g.stroke()});
+  g.fillStyle=ink;[0,Math.floor(n/2),n-1].forEach(function(i){var s=dates[i];s=s.slice(2,4)+"/"+s.slice(4);g.fillText(s,Math.max(0,Math.min(w-R-28,X(i)-14)),h-4)});
+}
 /* ---- 검색 ---- */
 function norm(s){return String(s||"").toLowerCase().replace(/\s+/g,"")}
 function core(n){return norm(String(n).replace(/\([^)]*\)/g,""))}
 function search(){
-  if(!ST)return;var raw=$("#q").value,q=norm(raw),ul=$("#res");$("#detail").innerHTML="";
+  if(!ST)return;var raw=$("#q").value,q=norm(raw),ul=$("#res");
   if(!q){ul.innerHTML="";return}
   var r=ST.items.filter(function(i){return norm(i.t)===q||core(i.n)===q});
   if(!r.length)r=ST.items.filter(function(i){return norm(i.t).indexOf(q)===0||norm(i.n).indexOf(q)>=0});
   if(!r.length&&q.length>=4){r=ST.items.filter(function(i){var c=core(i.n);return (c.length>=2&&q.indexOf(c)>=0)||(i.t.length>=3&&new RegExp("(^|[^a-z0-9])"+i.t.toLowerCase().replace(/[^a-z0-9]/g,"")+"($|[^a-z0-9])").test(raw.toLowerCase()))})}
-  if(r.length===1&&(norm(r[0].t)===q||core(r[0].n)===q||q.length>=4)){openStock(r[0].t);return}
+  if(r.length===1&&(norm(r[0].t)===q||core(r[0].n)===q||q.length>=4)){ul.innerHTML=li(r[0]);bindList(ul);openStock(r[0].t);return}
   r=r.slice(0,12);
   ul.innerHTML=r.length?r.map(li).join(""):'<li class="plain">찾는 종목이 없어요. 봇이 보는 약 '+ST.items.length+'개 종목 중에서만 찾을 수 있어요.</li>';
-  ul.querySelectorAll("li[data-t]").forEach(function(e){e.addEventListener("click",function(){openStock(e.dataset.t)})});
+  bindList(ul);
 }
 function renderMy(){
   var ul=$("#mylist");if(!ST){ul.innerHTML='<li class="plain">불러오는 중…</li>';return}
-  var r=MEM.my.map(function(t){return ST.items.filter(function(i){return i.t===t})[0]}).filter(Boolean);
+  var r=MEM.my.map(findS).filter(Boolean);
   ul.innerHTML=r.length?r.map(li).join(""):'<li class="plain">아직 없어요. 종목 카드에서 ☆ 버튼을 눌러 담아 보세요.</li>';
   bindList(ul);
+  var b=$("#mybanner");b.innerHTML="";
+  if(IMP.length){var nm=IMP.map(function(t){return findS(t).n}).join(", ");b.innerHTML='<div class="note"><b>링크에서 '+IMP.length+'종목을 찾았어요</b><br>'+esc(nm)+'<br><button class="btn" id="impOk">내 종목에 합치기</button><button class="btn ghost" id="impNo">무시</button></div>';
+    $("#impOk").addEventListener("click",function(){IMP.forEach(function(t){if(MEM.my.indexOf(t)<0)MEM.my.push(t)});IMP=[];save();renderMy()});
+    $("#impNo").addEventListener("click",function(){IMP=[];renderMy()})}
+  var tl=$("#mytools");
+  if(r.length){var link=location.origin+location.pathname+"#my="+MEM.my.join(",");
+    tl.innerHTML='<div class="note"><b>🔗 내 종목 링크</b><br><span class="mute">이 링크를 북마크하거나 카톡 나에게 보내 두면, 다른 폰이나 브라우저에서 열어 그대로 불러올 수 있어요.</span><input type="text" id="mylink" readonly value="'+esc(link)+'" style="margin:8px 0;font-size:14px"><button class="btn" id="mycopy">링크 복사</button><button class="btn ghost" id="mycmp">⚖ 담은 종목 비교</button></div>';
+    $("#mycopy").addEventListener("click",function(){var i=$("#mylink");i.select();var ok=false;try{if(navigator.clipboard){navigator.clipboard.writeText(link);ok=true}else ok=document.execCommand("copy")}catch(e){}$("#mycopy").textContent=ok?"복사했어요":"선택됐어요, 길게 눌러 복사"});
+    $("#mycmp").addEventListener("click",function(){var a=MEM.my.slice(0,4);PL=a.slice().reverse();PL=a;CK={};openStock(a[0]);if(PL.length>=2){CMPV=true;try{history.pushState({pl:PL.slice(),cmp:1},"","#s="+PL.join(","))}catch(e){}renderPanel()}})}
+  else tl.innerHTML="";
 }
 /* ---- 놀이터 ---- */
 function kst(d){var t=new Date((d||new Date()).getTime()+9*3600*1000);return t.toISOString().slice(0,10)}
@@ -322,16 +417,23 @@ function renderPerf(){
    '<div class="stat"><span>중앙값</span><b class="'+cls(p.med)+'">'+pct(p.med)+'</b></div>'+
    '<div class="stat"><span>수익 중인 신호</span><b>'+(p.plus_pct==null?"-":p.plus_pct.toFixed(0)+"%")+'</b></div>'+
    '<div class="stat"><span>같은 기간 S&amp;P500</span><b class="'+cls(p.spy_avg)+'">'+pct(p.spy_avg)+'</b></div></div>'+
-   '<div class="note"><b>솔직하게 말씀드려요.</b> 지금까지 신호의 평균 수익률은 마이너스이고, 같은 기간 시장보다도 낮아요. 이 봇은 3~6개월 보유를 기준으로 만들었는데 지금 신호 대부분은 아직 3개월이 지나지 않았어요'+(first?' (첫 3개월 경과일 '+esc(first)+')':'')+'. 3개월·6개월 결과가 쌓이면 이 표에 그대로 더할게요.</div>'+
+   '<div class="note"><b>솔직하게 말씀드려요.</b> 지금까지 신호의 평균 수익률은 마이너스이고, 같은 기간 시장보다도 낮아요. 지금 신호 대부분은 아직 3개월도 지나지 않아 결과가 확정되지 않았어요'+(first?' (첫 3개월 경과일 '+esc(first)+')':'')+'. 3개월·6개월 결과가 쌓이면 이 표에 그대로 더할게요.</div>'+
    '<table><thead><tr><th>종류</th><th class="r">건수</th><th class="r">평균</th><th class="r">수익 비율</th><th class="r">방어선 이탈</th></tr></thead><tbody>'+rows+'</tbody></table>'+
    (p.pm&&p.pm.n?'<div class="note">💰 신호가 뜰 때마다 100만 원씩 샀다면: 지금 합계 <b class="'+cls(p.pm.pnl)+'">'+pct(p.pm.pct)+'</b> (같은 기간 S&amp;P500에 넣었다면 '+pct(p.pm.spy_pct)+'). 수수료·세금·환율은 반영하지 않은 단순 계산이에요.</div>':'')+
    '<div><button class="btn ghost" id="bScore">📤 성적표 이미지 저장</button></div>'+
    '<details><summary>계산 방식</summary><p class="mute">신호가 뜬 날 기준가에서 지금(방어선을 이탈했다면 이탈 시점)까지의 변화율이에요. 방어선 이탈 '+p.brk+'건은 이탈 시점의 수익률로 고정돼요.</p></details>';
   $("#bScore").addEventListener("click",scoreCard);
-  var tb=$("#ledger tbody");tb.innerHTML="";shown=0;more();
+  var tb=$("#ledger tbody");tb.innerHTML="";shown=0;more();renderLfil();
+}
+function LL(){var L=D.ledger||[];if(!LF)return L;var cut=Date.now()-LF*86400000;return L.filter(function(x){return Date.parse(x.d)<=cut})}
+function renderLfil(){
+  var L=D.ledger||[],opts=[[0,"전체"],[30,"30일 지난 신호"],[90,"90일 지난 신호"]];
+  $("#lfil").innerHTML=opts.map(function(o){var cut=Date.now()-o[0]*86400000,r=L.filter(function(x){return o[0]===0||Date.parse(x.d)<=cut});var v=r.map(function(x){return x.r}).filter(function(z){return z!=null}),avg=v.length?v.reduce(function(a,b){return a+b},0)/v.length:null,pl=v.length?v.filter(function(z){return z>0}).length/v.length*100:null;
+    return '<button class="chip" data-f="'+o[0]+'" aria-pressed="'+(LF===o[0])+'">'+o[1]+' '+r.length+'건'+(v.length?' · 평균 '+pct(avg)+' · 수익 '+pl.toFixed(0)+'%':'')+'</button>'}).join("");
+  $("#lfil").querySelectorAll("button").forEach(function(b){b.addEventListener("click",function(){LF=+b.dataset.f;renderLfil();var tb=$("#ledger tbody");tb.innerHTML="";shown=0;more()})});
 }
 function more(){
-  var L=D.ledger||[],tb=$("#ledger tbody"),end=Math.min(shown+PAGE,L.length);
+  var L=LL(),tb=$("#ledger tbody"),end=Math.min(shown+PAGE,L.length);
   for(var i=shown;i<end;i++){var x=L[i];var tr=document.createElement("tr");
     tr.innerHTML='<td>'+x.no+'</td><td>'+esc(x.n)+'</td><td>'+esc((x.d||"").slice(5))+'</td><td class="r '+cls(x.r)+'">'+pct(x.r)+'</td><td>'+esc(x.st)+'</td>';tb.appendChild(tr)}
   shown=end;$("#more").style.display=shown<L.length?"inline-block":"none";
@@ -369,16 +471,39 @@ function scoreCard(){
   var items=[["평균 수익률",pct(p.avg)],["중앙값",pct(p.med)],["수익 중인 신호",(p.plus_pct==null?"-":p.plus_pct.toFixed(0)+"%")],["같은 기간 S&P500",pct(p.spy_avg)]];
   items.forEach(function(it,i){var x=80+(i%2)*480,y=360+Math.floor(i/2)*210;g.fillStyle="#eef2f6";g.fillRect(x,y,440,180);g.fillStyle="#667085";g.font="32px sans-serif";g.fillText(it[0],x+30,y+60);g.fillStyle="#17202a";g.font="bold 64px sans-serif";g.fillText(it[1],x+30,y+140)});
   g.fillStyle="#475467";g.font="34px sans-serif";var y=wrapText(g,"아직 3개월이 지나지 않은 신호가 대부분이에요. 맞은 것도 틀린 것도 그대로 공개해요.",80,860,920,50);foot(g);saveCanvas(cv,"levergachi-score.png")}
+/* ---- 등급 분포 · 갱신 시각 ---- */
+function renderDist(){
+  var el=$("#dist");if(!ST||!D){return}
+  var c={S:0,A:0,B:0,C:0,D:0},n=0;ST.items.forEach(function(x){var k=gl(x.g);if(c[k]!=null){c[k]++;n++}});if(!n)return;
+  var col={S:"#7c3aed",A:"#0f766e",B:"#b45309",C:"#667085",D:"#98a2b3"};
+  el.innerHTML='<h2>오늘의 등급 분포</h2><div class="dist">'+["S","A","B","C","D"].map(function(k){return c[k]?'<i style="width:'+(c[k]/n*100)+'%;background:'+col[k]+'">'+(c[k]/n>.06?k:"")+'</i>':""}).join("")+'</div>'+
+   '<p class="mute">'+["S","A","B","C","D"].map(function(k){return k+" "+c[k]}).join(" · ")+' (총 '+n+'종목). S·A등급이 신호 후보예요. 조건이 하나라도 모자라면 A등급이어도 알림이 보류돼요.</p>';
+}
+function renderStale(){
+  var u=(D&&D.updated)||"",m=/^(\d{4})-(\d\d)-(\d\d) (\d\d):(\d\d)/.exec(u);if(!m){$("#upd").textContent="";return}
+  var age=(Date.now()-Date.UTC(+m[1],+m[2]-1,+m[3],+m[4]-9,+m[5]))/60000;
+  var txt=age<60?Math.max(1,Math.round(age))+"분 전":age<1440?Math.round(age/60)+"시간 전":Math.floor(age/1440)+"일 전";
+  $("#upd").textContent="자료 기준 "+u+" ("+txt+")";
+  var kd=new Date(Date.now()+9*3600*1000).getUTCDay();
+  if(age>36*60&&kd>=2&&kd<=5)$("#stale").innerHTML='<div class="stale">⚠️ 자료가 '+txt+' 기준이에요. 갱신이 늦어지고 있을 수 있어요. 텔레그램 봇 알림이 더 정확해요.</div>';
+}
+function initHash(){
+  var h=(location.hash||"").slice(1);
+  if(h.indexOf("s=")===0){var a=h.slice(2).split(",").filter(function(t){return findS(t)}).slice(0,4);
+    if(a.length){try{history.replaceState(null,"",location.pathname+location.search)}catch(e){}tab("find");PL=a.slice();try{history.pushState({pl:PL.slice()},"","#s="+PL.join(","))}catch(e){}renderPanel()}}
+  else if(h.indexOf("my=")===0){IMP=h.slice(3).split(",").filter(function(t){return findS(t)&&MEM.my.indexOf(t)<0}).slice(0,60);tab("my")}
+}
 /* ---- 시작 ---- */
 $("#q").addEventListener("input",search);
-get("data.json").then(function(d){D=d;renderToday();renderPerf();renderPlay();$("#upd").textContent="자료 기준 "+(d.updated||"")}).catch(function(){
+renderPanel();
+get("data.json").then(function(d){D=d;renderToday();renderPerf();renderPlay();renderStale();renderDist()}).catch(function(){
   ["#weather","#sigs","#near","#perf"].forEach(function(s){$(s).innerHTML='<p class="mute">자료를 불러오지 못했어요. 잠시 뒤에 새로고침해 주세요.</p>'})});
-get("stocks.json").then(function(s){ST=s;search();renderMy()}).catch(function(){});
+get("stocks.json").then(function(s){ST=s;search();renderMy();renderDist();initHash()}).catch(function(){});
 get("quiz.json").then(function(q){QZ=q;if(D){renderTodayPlay();renderQuiz()}}).catch(function(){});
 get("nasdaq.json").then(function(n){NS=n;renderPred()}).catch(function(){});
 get("guide.json").then(function(g){GD=g;renderLearn()}).catch(function(){});
 get("glossary.json").then(function(g){GL=g;renderLearn()}).catch(function(){});
-var h=(location.hash||"").slice(1);if(["today","find","my","play","score","learn","start"].indexOf(h)>=0)tab(h);
+var h0=(location.hash||"").slice(1);if(["today","find","my","play","score","learn","start"].indexOf(h0)>=0)tab(h0);
 })();
 </script>
 </body>
