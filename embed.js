@@ -175,6 +175,7 @@
     mk('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }); mk('meta', { name: 'apple-mobile-web-app-title', content: '레버가치' });
     window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); window.__wbInstall = e; try { window.dispatchEvent(new Event('wb-install')); } catch (x) {} });
   } catch (e) {}
+  try { var sj = document.createElement('script'); sj.src = 'share.js?v=1'; sj.defer = true; document.head.appendChild(sj); } catch (e) {}
   try { var nj = document.createElement('script'); nj.src = 'news.js?v=1'; nj.defer = true; document.head.appendChild(nj); } catch (e) {}
   try { var pj = document.createElement('script'); pj.src = 'plus.js?v=1'; pj.defer = true; document.head.appendChild(pj); } catch (e) {}
 })();
