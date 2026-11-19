@@ -166,6 +166,7 @@
   try { var ht = document.createElement('script'); ht.src = 'heat.js?v=1'; ht.defer = true; document.head.appendChild(ht); } catch (e) {}
   try { var xj = document.createElement('script'); xj.src = 'perfx.js?v=1'; xj.defer = true; document.head.appendChild(xj); } catch (e) {}
   try { var cj = document.createElement('script'); cj.src = 'cal.js?v=1'; cj.defer = true; document.head.appendChild(cj); } catch (e) {}
+  try { var jj = document.createElement('script'); jj.src = 'join.js?v=1'; jj.defer = true; document.head.appendChild(jj); } catch (e) {}
   try { var nj = document.createElement('script'); nj.src = 'news.js?v=1'; nj.defer = true; document.head.appendChild(nj); } catch (e) {}
   try { var pj = document.createElement('script'); pj.src = 'plus.js?v=1'; pj.defer = true; document.head.appendChild(pj); } catch (e) {}
 })();
