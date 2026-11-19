@@ -20,6 +20,7 @@
     { k: 'heat', t: '🗺️ 히트맵', f: function () { go('wbHeat'); }, need: 'wbHeat' },
     { k: 'news', t: '📰 뉴스', f: function () { go('wbNews'); }, need: 'wbNews' },
     { k: 'my', t: '⭐ 내 종목', f: function () { clickTab('내 종목'); } },
+    { k: 'link', t: '🔗 이 종목 링크', f: function () { copyLink(); }, need: '__wbcur' },
     { k: 'game', t: '🎮 원복 객장', f: function () { var o = document.getElementById('wbOpen'); if (o) o.click(); }, need: 'wbOpen' }
   ];
   function css() {
@@ -35,10 +36,39 @@
     if (!bar) return;
     [].forEach.call(bar.querySelectorAll('button'), function (b) {
       var it = ITEMS.filter(function (x) { return x.k === b.dataset.k; })[0];
-      b.style.display = (it && it.need && !document.getElementById(it.need)) ? 'none' : '';
+      b.style.display = (it && it.need && !(it.need === '__wbcur' ? cur : document.getElementById(it.need))) ? 'none' : '';
     });
     var nav = document.querySelector('nav'); if (nav) document.documentElement.style.setProperty('--wbnav', nav.offsetHeight + 'px');
   }
+  var cur = '', toastEl;
+  function okT(t) { return /^[A-Za-z0-9.\-]{1,12}$/.test(t || ''); }
+  function setUrl(t) { try { var u = new URL(location.href); u.searchParams.set('t', t); history.replaceState(null, '', u.pathname + u.search + u.hash); } catch (e) {} }
+  function toast(msg) {
+    if (!toastEl) { toastEl = el('div'); toastEl.style.cssText = 'position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#111827;color:#fff;padding:9px 16px;border-radius:999px;font:600 14px sans-serif;z-index:2147482000;opacity:0;transition:opacity .2s;pointer-events:none'; document.body.appendChild(toastEl); }
+    toastEl.textContent = msg; toastEl.style.opacity = '1'; clearTimeout(toastEl._t); toastEl._t = setTimeout(function () { toastEl.style.opacity = '0'; }, 1800);
+  }
+  function copyLink() {
+    if (!cur) return; var url = location.origin + location.pathname + '?t=' + encodeURIComponent(cur);
+    function fb() { var ta = el('textarea'); ta.value = url; ta.style.cssText = 'position:fixed;opacity:0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); toast('링크를 복사했어요'); } catch (e) { toast(url); } ta.remove(); }
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(function () { toast('링크를 복사했어요'); }, fb); else fb();
+  }
+  function openT(t) {
+    var li = document.querySelector('li[data-t="' + t + '"]'); if (li) { li.click(); return true; }
+    var q = document.getElementById('q'); if (!q) return false;
+    q.value = t; q.dispatchEvent(new Event('input', { bubbles: true }));
+    setTimeout(function () { var r = document.querySelector('#res li[data-t="' + t + '"]') || document.querySelector('#res li[data-t]'); if (r) r.click(); }, 300);
+    return true;
+  }
+  function deep() {
+    var t = ''; try { t = new URL(location.href).searchParams.get('t') || ''; } catch (e) {}
+    if (!okT(t)) return; var tries = 0;
+    (function tick() { if (document.getElementById('q') && document.querySelector('li[data-t]')) { openT(t); return; } if (++tries < 30) setTimeout(tick, 500); })();
+  }
+  document.addEventListener('click', function (e) {
+    var li = e.target.closest && e.target.closest('li[data-t]'); if (!li) return;
+    var t = li.getAttribute('data-t'); if (okT(t)) { cur = t; setUrl(t); sync(); }
+  }, true);
+
   function build() {
     host = document.getElementById('today'); if (!host || document.getElementById('wbHub')) return;
     css(); bar = el('div'); bar.id = 'wbHub'; bar.setAttribute('role', 'navigation'); bar.setAttribute('aria-label', '시장 센터 메뉴');
@@ -50,6 +80,7 @@
     try { new MutationObserver(sync).observe(host, { childList: true }); } catch (e) {}
     try { new MutationObserver(sync).observe(document.querySelector('.links') || document.body, { childList: true, subtree: !!document.querySelector('.links') }); } catch (e) {}
     window.addEventListener('resize', sync);
+    deep();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', build); else build();
 })();
