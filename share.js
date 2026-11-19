@@ -28,7 +28,8 @@
     cv.toBlob(function (b) {
       if (!b) return;
       var file; try { file = new File([b], 'levergachi-' + t + '.png', { type: 'image/png' }); } catch (e) {}
-      if (file && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: '레버가치 ' + t, url: location.origin + location.pathname + '?t=' + encodeURIComponent(t) }).catch(function () {}); return; }
+      var touch = window.matchMedia && matchMedia('(pointer: coarse)').matches;
+      if (touch && file && navigator.canShare && navigator.canShare({ files: [file] })) { navigator.share({ files: [file], title: '레버가치 ' + t, url: location.origin + location.pathname + '?t=' + encodeURIComponent(t) }).catch(function () {}); return; }
       var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'levergachi-' + t + '.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
     }, 'image/png');
   }
