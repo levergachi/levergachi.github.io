@@ -105,5 +105,6 @@
     if (/[?&]game=1\b/.test(location.search)) open();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  try { var ms = document.createElement('style'); ms.id = 'wbm'; ms.textContent = '@media (max-width:640px){header{padding-top:10px!important}header .who{font-size:12px}header .sub,header .gl{display:none!important}header h1{font-size:19px!important;margin:4px 0!important}header .links{flex-wrap:nowrap!important;overflow-x:auto;gap:6px!important;padding-bottom:4px;-webkit-overflow-scrolling:touch;scrollbar-width:none}header .links::-webkit-scrollbar{display:none}header .links a{flex:0 0 auto;padding:6px 10px!important;font-size:13px!important;white-space:nowrap}#today.on{display:flex;flex-direction:column}#today>#brief{order:-4}#today>#sigs{order:-3}#today>#wbChg{order:-2}}'; document.head.appendChild(ms); } catch (e) {}
   try { var pj = document.createElement('script'); pj.src = 'plus.js?v=1'; pj.defer = true; document.head.appendChild(pj); } catch (e) {}
 })();
