@@ -13,8 +13,8 @@ FEEDS = {
     'dart': 'https://dart.fss.or.kr/api/todayRSS.xml',
 }
 OKHOST = {'fed': 'www.federalreserve.gov', 'sec': 'www.sec.gov', 'dart': 'dart.fss.or.kr'}
-KEEP_DAYS = {'fed': 60, 'sec': 60, 'dart': 14, 'stk': 4}
-CAP = {'fed': 40, 'sec': 40, 'dart': 80, 'stk': 60}
+KEEP_DAYS = {'fed': 60, 'sec': 60, 'dart': 14, 'stk': 4, 'usj': 3, 'krj': 3, 'krn': 4, 'rd': 2}
+CAP = {'fed': 40, 'sec': 40, 'dart': 80, 'stk': 60, 'usj': 40, 'krj': 40, 'krn': 40, 'rd': 30}
 WATCH = ['삼성전자', 'SK하이닉스']
 KW = re.compile(r'영업\(잠정\)실적|영업실적|유상증자|무상증자|자기주식|합병|분할|배당|단일판매|공급계약|감자|상장폐지|거래정지|횡령|배임|불성실|투자판단관련')
 
@@ -80,6 +80,65 @@ def get_stk(tk):
     req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (compatible; levergachi-news/1.0; +https://levergachi.github.io)', 'Accept': 'application/rss+xml, application/xml, text/xml'})
     with urllib.request.urlopen(req, timeout=20) as r: return r.read()
 
+# 제목+링크만 모으는 일반 언론/커뮤니티 피드 (src, 이름, URL, 허용 호스트 정규식, 피드당 최대건수)
+EXTRA = [
+    ('usj', 'CNBC', 'https://www.cnbc.com/id/10000664/device/rss/rss.html', r'(^|\.)cnbc\.com$', 8),
+    ('usj', 'CNBC 시장', 'https://www.cnbc.com/id/20910258/device/rss/rss.html', r'(^|\.)cnbc\.com$', 8),
+    ('usj', 'MarketWatch', 'https://feeds.content.dowjones.io/public/rss/mw_topstories', r'(^|\.)marketwatch\.com$', 8),
+    ('usj', 'Yahoo Finance', 'https://news.google.com/rss/search?q=when:1d+site:finance.yahoo.com&hl=en-US&gl=US&ceid=US:en', r'^news\.google\.com$', 6),
+    ('usj', 'WSJ·Bloomberg·Reuters', 'https://news.google.com/rss/search?q=when:1d+(site:wsj.com+OR+site:bloomberg.com+OR+site:reuters.com)+stocks&hl=en-US&gl=US&ceid=US:en', r'^news\.google\.com$', 10),
+    ('rd', 'r/wallstreetbets', 'https://www.reddit.com/r/wallstreetbets/top/.rss?t=day', r'(^|\.)reddit\.com$', 8),
+    ('rd', 'r/stocks', 'https://www.reddit.com/r/stocks/top/.rss?t=day', r'(^|\.)reddit\.com$', 8),
+    ('rd', 'r/investing', 'https://www.reddit.com/r/investing/top/.rss?t=day', r'(^|\.)reddit\.com$', 6),
+    ('krj', '한국경제', 'https://www.hankyung.com/feed/finance', r'(^|\.)hankyung\.com$', 8),
+    ('krj', '매일경제', 'https://www.mk.co.kr/rss/50200011/', r'(^|\.)mk\.co\.kr$', 8),
+    ('krj', '연합뉴스', 'https://www.yna.co.kr/rss/economy.xml', r'(^|\.)yna\.co\.kr$', 8),
+    ('krj', '주요 경제지', 'https://news.google.com/rss/search?q=when:1d+(증시+OR+코스피+OR+반도체)&hl=ko&gl=KR&ceid=KR:ko', r'^news\.google\.com$', 12),
+]
+UA_B = 'Mozilla/5.0 (compatible; levergachi-news/1.0; +https://levergachi.github.io)'
+
+def parse_any(raw):
+    """RSS(item) 와 Atom(entry) 모두 (제목, 링크, 날짜, 출처) 로."""
+    raw = raw.lstrip(b'\xef\xbb\xbf').lstrip()
+    root = ET.fromstring(raw)
+    for it in root.iter('item'):
+        yield (it.findtext('title') or '').strip(), (it.findtext('link') or '').strip(), (it.findtext('pubDate') or '').strip(), (it.findtext('source') or '').strip()
+    A = '{http://www.w3.org/2005/Atom}'
+    for it in root.iter(A + 'entry'):
+        l = it.find(A + 'link'); href = l.get('href') if l is not None else ''
+        yield (it.findtext(A + 'title') or '').strip(), (href or '').strip(), (it.findtext(A + 'updated') or '').strip(), ''
+
+def get_url(url, fxname):
+    if FX:
+        p = os.path.join(FX, fxname + '.xml')
+        if not os.path.exists(p): raise IOError('no fixture ' + fxname)
+        with open(p, 'rb') as f: return f.read()
+    req = urllib.request.Request(url, headers={'User-Agent': UA_B, 'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml'})
+    with urllib.request.urlopen(req, timeout=20) as r: return r.read()
+
+def iso_any(s):
+    t = iso(s)
+    if t: return t
+    try:
+        d = datetime.fromisoformat(s.replace('Z', '+00:00'))
+        if d.tzinfo is None: d = d.replace(tzinfo=timezone.utc)
+        return d.astimezone(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    except Exception:
+        return None
+
+def kr_names():
+    """봇의 한국 종목(.KS) → 구글뉴스 검색어(회사명)."""
+    try:
+        with open(os.environ.get('DATA_JSON', 'data.json'), encoding='utf-8') as f: d = json.load(f)
+    except Exception: return {}
+    out = {}
+    for k in ('signals', 'near', 'hot'):
+        for x in d.get(k) or []:
+            if isinstance(x, dict) and str(x.get('t', '')).endswith('.KS'):
+                nm = re.sub(r'\(.*?\)', '', x.get('n') or '').strip()
+                if nm: out[x['t']] = nm
+    return out
+
 def clean(s): return re.sub(r'\s+', ' ', s).strip()
 
 def dart_item(title):
@@ -118,6 +177,39 @@ def main():
         except Exception as e:
             ok[src] = False
             print('FAIL', src, type(e).__name__, str(e)[:120], file=sys.stderr)
+    def add_feed(src, label, url, fxname, hostre, cap, tk=None, co=None):
+        got = 0
+        for title, link, pub, srcname in parse_any(get_url(url, fxname)):
+            t = iso_any(pub); title = clean(title)
+            if not (title and link and t): continue
+            m = re.match(r'^https://([^/]+)/', link)
+            if not (m and re.search(hostre, m.group(1))): continue
+            if got >= cap: break
+            media = srcname or label
+            if src in ('usj', 'krj', 'krn') and ' - ' in title and not srcname:
+                title, media = title.rsplit(' - ', 1)
+            elif ' - ' in title and srcname and title.endswith(' - ' + srcname): title = title[:-len(srcname) - 3]
+            rec = {'s': src, 't': title, 'l': link, 'd': t, 'pub': media[:30]}
+            if tk: rec['tk'] = tk; rec['co'] = co
+            prev = items.get(link)
+            if prev and prev.get('k') and prev.get('t') == title: rec['k'] = prev['k']
+            items[link] = rec; got += 1
+        return got
+    for idx, (src, label, url, hostre, cap) in enumerate(EXTRA):
+        try:
+            n = add_feed(src, label, url, 'ex%d' % idx, hostre, cap); ok[src] = ok.get(src, False) or n > 0
+            print('feed', label, n)
+        except Exception as e:
+            ok.setdefault(src, False); print('FAIL feed', label, type(e).__name__, str(e)[:80], file=sys.stderr)
+        time.sleep(0.4)
+    for tk, nm in kr_names().items():
+        try:
+            q = urllib.parse.quote(nm + ' when:2d')
+            n = add_feed('krn', nm, 'https://news.google.com/rss/search?q=' + q + '&hl=ko&gl=KR&ceid=KR:ko', 'krn_' + tk, r'^news\.google\.com$', 4, tk=tk, co=nm)
+            ok['krn'] = ok.get('krn', False) or n > 0; print('krn', nm, n)
+        except Exception as e:
+            ok.setdefault('krn', False); print('FAIL krn', nm, type(e).__name__, str(e)[:80], file=sys.stderr)
+        time.sleep(0.4)
     tks = bot_tickers(); sgot = 0; sfail = 0
     for tk, nm in tks.items():
         try:
@@ -138,9 +230,10 @@ def main():
     if tks: ok['stk'] = sgot > 0 or sfail < len(tks)
     now = datetime.now(timezone.utc)
     out = []
-    for src in list(FEEDS) + ['stk']:
+    for src in list(FEEDS) + ['stk', 'usj', 'krj', 'krn', 'rd']:
         lst = [i for i in items.values() if i['s'] == src]
         lst = [i for i in lst if (now - datetime.strptime(i['d'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)).days <= KEEP_DAYS[src]]
+        if src == 'krn': lst = [i for i in lst if i.get('tk') in kr_names()] if kr_names() else lst
         if src == 'stk' and tks: lst = [i for i in lst if i.get('tk') in tks]
         lst.sort(key=lambda i: i['d'], reverse=True)
         out += lst[:CAP[src]]
