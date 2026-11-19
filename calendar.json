@@ -1,0 +1,7 @@
+{"v":1,"updated":"2026-11-19","note":"공식 기관 발표 일정(연준·미국 노동통계국)을 사람이 확인해 옮긴 값이에요. 일정은 바뀔 수 있어요.","events":[
+{"d":"2026-12-04","t":"22:30","k":"jobs","n":"미국 고용보고서 (11월분)","us":"12/4 08:30 ET","src":"https://www.bls.gov/schedule/news_release/empsit.htm"},
+{"d":"2026-12-08","e":"2026-12-09","k":"fomc","n":"FOMC 정례회의 (경제전망 포함)","us":"12/8~12/9","src":"https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm"},
+{"d":"2026-12-10","t":"22:30","k":"cpi","n":"미국 소비자물가지수 CPI (11월분)","us":"12/10 08:30 ET","src":"https://www.bls.gov/schedule/news_release/cpi.htm"},
+{"d":"2027-01-08","t":"22:30","k":"jobs","n":"미국 고용보고서 (12월분)","us":"1/8 08:30 ET","src":"https://www.bls.gov/schedule/news_release/empsit.htm"},
+{"d":"2027-01-13","k":"cpi","n":"미국 소비자물가지수 CPI (12월분)","us":"1/13, 시각은 공식 페이지 확인","src":"https://www.bls.gov/schedule/news_release/cpi.htm"}
+]}

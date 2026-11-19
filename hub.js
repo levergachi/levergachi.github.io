@@ -19,6 +19,7 @@
     { k: 'sigs', t: '🚦 저점매수 신호', f: function () { go('sigs'); } },
     { k: 'heat', t: '🗺️ 히트맵', f: function () { go('wbHeat'); }, need: 'wbHeat' },
     { k: 'news', t: '📰 뉴스', f: function () { go('wbNews'); }, need: 'wbNews' },
+    { k: 'cal', t: '📅 일정', f: function () { go('wbCal'); }, need: 'wbCal' },
     { k: 'my', t: '⭐ 내 종목', f: function () { clickTab('내 종목'); } },
     { k: 'link', t: '🔗 이 종목 링크', f: function () { copyLink(); }, need: '__wbcur' },
     { k: 'game', t: '🎮 원복 객장', f: function () { var o = document.getElementById('wbOpen'); if (o) o.click(); }, need: 'wbOpen' }
