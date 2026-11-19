@@ -105,4 +105,5 @@
     if (/[?&]game=1\b/.test(location.search)) open();
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  try { var pj = document.createElement('script'); pj.src = 'plus.js?v=1'; pj.defer = true; document.head.appendChild(pj); } catch (e) {}
 })();
