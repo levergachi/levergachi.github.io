@@ -17,6 +17,7 @@
   var ITEMS = [
     { k: 'brief', t: '👀 한눈에', f: function () { go('brief'); } },
     { k: 'sigs', t: '🚦 저점매수 신호', f: function () { go('sigs'); } },
+    { k: 'heat', t: '🗺️ 히트맵', f: function () { go('wbHeat'); }, need: 'wbHeat' },
     { k: 'news', t: '📰 뉴스', f: function () { go('wbNews'); }, need: 'wbNews' },
     { k: 'my', t: '⭐ 내 종목', f: function () { clickTab('내 종목'); } },
     { k: 'game', t: '🎮 원복 객장', f: function () { var o = document.getElementById('wbOpen'); if (o) o.click(); }, need: 'wbOpen' }
