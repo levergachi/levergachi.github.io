@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """공식 기관 RSS(Fed·SEC·DART) → news.json (링크만, 요약·해석 없음). 표준 라이브러리만 사용."""
-import json, os, re, sys, time, urllib.request, xml.etree.ElementTree as ET
+import json, os, re, sys, time, urllib.parse, urllib.request, xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -38,6 +38,20 @@ def iso(s):
     except Exception:
         return None
 
+def translate_ko(text):
+    """영어 제목 → 한국어 자동번역(구글 번역 비공식 엔드포인트). 실패하면 None."""
+    if os.environ.get('NEWS_FAKE_KO'): return '[번역]' + text
+    if os.environ.get('NEWS_NO_TRANSLATE'): return None
+    try:
+        url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + urllib.parse.quote(text)
+        with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA}), timeout=15) as r:
+            j = json.loads(r.read())
+        ko = ''.join(seg[0] for seg in j[0] if seg and seg[0]).strip()
+        return ko if ko and ko != text and len(ko) < 400 else None
+    except Exception as e:
+        print('TRANSLATE FAIL', type(e).__name__, str(e)[:80], file=sys.stderr)
+        return None
+
 def clean(s): return re.sub(r'\s+', ' ', s).strip()
 
 def dart_item(title):
@@ -69,6 +83,8 @@ def main():
                     if not x: continue
                     rec.update({'t': x['subj'], 'co': x['co'], 'mk': x['mk']})
                     if x['watch']: rec['w'] = 1
+                prev = items.get(link)
+                if prev and prev.get('k') and prev.get('t') == rec['t']: rec['k'] = prev['k']
                 items[link] = rec; got += 1
             ok[src] = got > 0
         except Exception as e:
@@ -82,6 +98,13 @@ def main():
         lst.sort(key=lambda i: i['d'], reverse=True)
         out += lst[:CAP[src]]
     out.sort(key=lambda i: i['d'], reverse=True)
+    fails = 0
+    for i in out:
+        if i['s'] in ('fed', 'sec') and not i.get('k'):
+            if fails >= 3: break
+            ko = translate_ko(i['t'])
+            if ko: i['k'] = ko; time.sleep(0.3)
+            else: fails += 1
     same = [i for i in old.get('items', [])] == out
     fresh = False
     try:

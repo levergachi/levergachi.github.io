@@ -25,6 +25,7 @@
       '#wbNews .tt{font-weight:600;line-height:1.4;word-break:break-word}#wbNews .mt{font-size:12.5px;color:var(--mute,#64748b);margin-top:3px}' +
       '#wbNews .bd{display:inline-block;font-size:11.5px;font-weight:700;border-radius:6px;padding:1px 6px;margin-right:6px;background:var(--chip,#f1f5f9)}' +
       '#wbNews .bd.w{background:#fef3c7;color:#92400e}#wbNews .mr{margin-top:8px;appearance:none;border:1px solid var(--line,#ddd);background:none;color:inherit;border-radius:9px;padding:7px 12px;font:600 13px inherit;cursor:pointer}' +
+      '#wbNews .og{font-size:12.5px;color:var(--mute,#64748b);margin-top:2px;line-height:1.4;word-break:break-word}' +
       '#wbNews .ft{font-size:12px;color:var(--mute,#64748b);margin-top:10px;line-height:1.5}';
     document.head.appendChild(s);
   }
@@ -34,8 +35,8 @@
     var n = more ? list.length : Math.min(SHOW, list.length);
     for (var k = 0; k < n; k++) {
       var i = list[k], li = el('li'), a = el('a'); a.href = i.l; a.target = '_blank'; a.rel = 'noopener noreferrer';
-      a.appendChild(el('div', 'tt', i.t));
-      var m = el('div', 'mt'); var b = el('span', 'bd' + (i.w ? ' w' : ''), (i.w ? '★ ' : '') + SRC[i.s].n); m.appendChild(b);
+      a.appendChild(el('div', 'tt', i.k || i.t)); if (i.k) a.appendChild(el('div', 'og', '원문: ' + i.t));
+      var m = el('div', 'mt'); var b = el('span', 'bd' + (i.w ? ' w' : ''), (i.w ? '★ ' : '') + SRC[i.s].n + (i.k ? ' · 자동번역' : '')); m.appendChild(b);
       m.appendChild(document.createTextNode((i.co ? i.co + ' · ' : '') + kst(i.d) + ' (한국시간)'));
       a.appendChild(m); li.appendChild(a); ul.appendChild(li);
     }
@@ -55,7 +56,7 @@
     card.appendChild(nc); card.appendChild(el('ul'));
     var mr = el('button', 'mr'); mr.type = 'button'; mr.addEventListener('click', function () { more = !more; render(); }); card.appendChild(mr);
     meta = el('div', 'ft'); card.appendChild(meta);
-    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않아요.';
+    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 자동번역이라 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
     if (!isNaN(upd)) txt += ' 마지막 수집 ' + kst(j.updated) + (hrs > 6 ? ' ⚠ 수집이 늦어지고 있어요.' : '') + '.';
     meta.textContent = txt;
     var anchor = document.getElementById('wbChg') || document.getElementById('sigs') || document.getElementById('brief');
