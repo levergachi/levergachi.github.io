@@ -33,6 +33,12 @@
      ['알림 소리가 안 나요', '텔레그램 앱의 알림 설정에서 봇 대화의 알림이 켜져 있는지 확인해 주세요.']].forEach(function (q) {
       var d = el('details'); d.appendChild(el('summary', null, q[0])); d.appendChild(el('p', null, q[1])); c.appendChild(d);
     });
+    var dd = el('details'); dd.appendChild(el('summary', null, '📲 앱처럼 홈 화면에 추가하기'));
+    var pp = el('p', null, '안드로이드 크롬은 메뉴(⋮)에서 \'홈 화면에 추가\' 또는 \'앱 설치\'를, 아이폰 사파리는 공유 버튼에서 \'홈 화면에 추가\'를 누르면 아이콘으로 바로 열 수 있어요.');
+    dd.appendChild(pp);
+    function inst() { if (!window.__wbInstall || dd.querySelector('.wbinst')) return; var b = el('button', 'wbinst', '앱 설치하기'); b.type = 'button'; b.style.cssText = 'display:block;margin-top:8px;border:1.5px solid var(--brand,#0f766e);background:var(--brand,#0f766e);color:#fff;border-radius:10px;padding:8px 14px;font:700 14px inherit;cursor:pointer'; b.addEventListener('click', function () { try { window.__wbInstall.prompt(); } catch (e) {} }); dd.appendChild(b); }
+    inst(); window.addEventListener('wb-install', inst);
+    c.appendChild(dd);
     sec.insertBefore(c, sec.firstChild); return true;
   }
   function start() { var n = 0; (function tick() { if (build() || ++n > 30) return; setTimeout(tick, 500); })(); }

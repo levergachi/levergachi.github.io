@@ -167,6 +167,14 @@
   try { var xj = document.createElement('script'); xj.src = 'perfx.js?v=1'; xj.defer = true; document.head.appendChild(xj); } catch (e) {}
   try { var cj = document.createElement('script'); cj.src = 'cal.js?v=1'; cj.defer = true; document.head.appendChild(cj); } catch (e) {}
   try { var jj = document.createElement('script'); jj.src = 'join.js?v=1'; jj.defer = true; document.head.appendChild(jj); } catch (e) {}
+  try {
+    var hd = document.head, mk = function (tag, attrs) { var e = document.createElement(tag); for (var k in attrs) e.setAttribute(k, attrs[k]); hd.appendChild(e); };
+    if (!document.querySelector('link[rel="manifest"]')) mk('link', { rel: 'manifest', href: 'app.webmanifest' });
+    if (!document.querySelector('link[rel="apple-touch-icon"]')) mk('link', { rel: 'apple-touch-icon', href: 'lgp-apple-touch-icon.png' });
+    if (!document.querySelector('meta[name="theme-color"]')) mk('meta', { name: 'theme-color', content: '#0f766e' });
+    mk('meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }); mk('meta', { name: 'apple-mobile-web-app-title', content: '레버가치' });
+    window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); window.__wbInstall = e; try { window.dispatchEvent(new Event('wb-install')); } catch (x) {} });
+  } catch (e) {}
   try { var nj = document.createElement('script'); nj.src = 'news.js?v=1'; nj.defer = true; document.head.appendChild(nj); } catch (e) {}
   try { var pj = document.createElement('script'); pj.src = 'plus.js?v=1'; pj.defer = true; document.head.appendChild(pj); } catch (e) {}
 })();
