@@ -5,7 +5,23 @@
   if (window.__wbNews) return; window.__wbNews = 1;
   var SRC = { fed: { n: '연준(Fed)', f: 'us' }, sec: { n: 'SEC', f: 'us' }, dart: { n: 'DART 공시', f: 'kr' } };
   var HOST = { fed: 'www.federalreserve.gov', sec: 'www.sec.gov', dart: 'dart.fss.or.kr' };
-  var SHOW = 8, filter = 'all', all = [], more = false, card, meta;
+  var SHOW = 8, filter = 'all', all = [], more = false, card, meta, CK = 'lgnk1', KO = {}, trFail = false, trBusy = false, rtm = 0;
+  try { KO = JSON.parse(localStorage.getItem(CK) || '{}') || {}; if (typeof KO !== 'object') KO = {}; } catch (e) { KO = {}; }
+  function koOf(i) { return i.k || KO[i.l] || ''; }
+  function saveKO() { try { var ks = Object.keys(KO); if (ks.length > 150) ks.slice(0, ks.length - 150).forEach(function (k) { delete KO[k]; }); localStorage.setItem(CK, JSON.stringify(KO)); } catch (e) {} }
+  function gtx(text) {
+    return fetch('https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + encodeURIComponent(text)).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
+      var ko = (j[0] || []).map(function (x) { return x && x[0] ? x[0] : ''; }).join('').trim(); if (!ko || ko === text || ko.length > 400) throw 0; return ko;
+    });
+  }
+  function pump(list) {
+    if (trBusy || trFail) return; var todo = list.filter(function (i) { return SRC[i.s].f === 'us' && !koOf(i); }); if (!todo.length) return;
+    trBusy = true;
+    (function next(k) {
+      if (k >= todo.length || trFail) { trBusy = false; return; }
+      gtx(todo[k].t).then(function (ko) { KO[todo[k].l] = ko; saveKO(); clearTimeout(rtm); rtm = setTimeout(render, 120); setTimeout(function () { next(k + 1); }, 200); }, function () { trFail = true; trBusy = false; });
+    })(0);
+  }
   function el(t, c, x) { var e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; }
   function kst(iso) {
     var d = new Date(iso); if (isNaN(d)) return '';
@@ -35,12 +51,13 @@
     var n = more ? list.length : Math.min(SHOW, list.length);
     for (var k = 0; k < n; k++) {
       var i = list[k], li = el('li'), a = el('a'); a.href = i.l; a.target = '_blank'; a.rel = 'noopener noreferrer';
-      a.appendChild(el('div', 'tt', i.k || i.t)); if (i.k) a.appendChild(el('div', 'og', '원문: ' + i.t));
-      var m = el('div', 'mt'); var b = el('span', 'bd' + (i.w ? ' w' : ''), (i.w ? '★ ' : '') + SRC[i.s].n + (i.k ? ' · 자동번역' : '')); m.appendChild(b);
+      var ko = koOf(i); a.appendChild(el('div', 'tt', ko || i.t)); if (ko) a.appendChild(el('div', 'og', '원문: ' + i.t));
+      var m = el('div', 'mt'); var b = el('span', 'bd' + (i.w ? ' w' : ''), (i.w ? '★ ' : '') + SRC[i.s].n + (koOf(i) ? ' · 자동번역' : '')); m.appendChild(b);
       m.appendChild(document.createTextNode((i.co ? i.co + ' · ' : '') + kst(i.d) + ' (한국시간)'));
       a.appendChild(m); li.appendChild(a); ul.appendChild(li);
     }
     if (!list.length) ul.appendChild(el('li', 'mt', '이 구분에는 아직 올라온 발표가 없어요.'));
+    pump(list.slice(0, n));
     var mr = card.querySelector('.mr'); mr.style.display = list.length > SHOW ? '' : 'none'; mr.textContent = more ? '접기' : '더 보기 (' + (list.length - SHOW) + '건)';
     [].forEach.call(card.querySelectorAll('.nc button'), function (b) { b.classList.toggle('on', b.dataset.f === filter); });
   }
@@ -56,7 +73,7 @@
     card.appendChild(nc); card.appendChild(el('ul'));
     var mr = el('button', 'mr'); mr.type = 'button'; mr.addEventListener('click', function () { more = !more; render(); }); card.appendChild(mr);
     meta = el('div', 'ft'); card.appendChild(meta);
-    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 자동번역이라 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
+    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 구글 번역으로 자동번역해 보여 주고(번역이 안 되면 영어로 나와요) 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
     if (!isNaN(upd)) txt += ' 마지막 수집 ' + kst(j.updated) + (hrs > 6 ? ' ⚠ 수집이 늦어지고 있어요.' : '') + '.';
     meta.textContent = txt;
     var anchor = document.getElementById('wbChg') || document.getElementById('sigs') || document.getElementById('brief');

@@ -41,7 +41,7 @@ def iso(s):
 def translate_ko(text):
     """영어 제목 → 한국어 자동번역(구글 번역 비공식 엔드포인트). 실패하면 None."""
     if os.environ.get('NEWS_FAKE_KO'): return '[번역]' + text
-    if os.environ.get('NEWS_NO_TRANSLATE'): return None
+    if not os.environ.get('NEWS_TRANSLATE'): return None  # GitHub 서버에서는 구글 번역이 429로 막혀 기본 꺼 둠(번역은 브라우저에서)
     try:
         url = 'https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ko&dt=t&q=' + urllib.parse.quote(text)
         with urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': UA}), timeout=15) as r:
