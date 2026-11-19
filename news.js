@@ -3,7 +3,7 @@
 (function () {
   'use strict';
   if (window.__wbNews) return; window.__wbNews = 1;
-  var SRC = { fed: { n: '연준(Fed)', f: 'us' }, sec: { n: 'SEC', f: 'us' }, dart: { n: 'DART 공시', f: 'kr' } };
+  var SRC = { fed: { n: '연준(Fed)', f: 'us' }, sec: { n: 'SEC', f: 'us' }, dart: { n: 'DART 공시', f: 'kr' }, stk: { n: '봇 종목', f: 'us' } };
   var HOST = { fed: 'www.federalreserve.gov', sec: 'www.sec.gov', dart: 'dart.fss.or.kr' };
   var SHOW = 8, filter = 'all', all = [], more = false, card, meta, CK = 'lgnk1', KO = {}, trFail = false, trBusy = false, rtm = 0;
   try { KO = JSON.parse(localStorage.getItem(CK) || '{}') || {}; if (typeof KO !== 'object') KO = {}; } catch (e) { KO = {}; }
@@ -28,7 +28,7 @@
     var k = new Date(d.getTime() + 9 * 3600 * 1000), p = function (n) { return (n < 10 ? '0' : '') + n; };
     return p(k.getUTCMonth() + 1) + '/' + p(k.getUTCDate()) + ' ' + p(k.getUTCHours()) + ':' + p(k.getUTCMinutes());
   }
-  function okLink(i) { try { var u = new URL(i.l); return u.protocol === 'https:' && u.hostname === HOST[i.s]; } catch (e) { return false; } }
+  function okLink(i) { try { var u = new URL(i.l); return u.protocol === 'https:' && (i.s === 'stk' ? /(^|\.)yahoo\.com$/.test(u.hostname) : u.hostname === HOST[i.s]); } catch (e) { return false; } }
   function css() {
     if (document.getElementById('wbNewsCss')) return;
     var s = el('style'); s.id = 'wbNewsCss';
@@ -46,17 +46,17 @@
     document.head.appendChild(s);
   }
   function render() {
-    var list = all.filter(function (i) { return filter === 'all' || SRC[i.s].f === filter || (filter === 'watch' && i.w); });
+    var list = all.filter(function (i) { return filter === 'all' || (filter === 'stk' ? i.s === 'stk' : (i.s !== 'stk' && SRC[i.s].f === filter)) || (filter === 'watch' && i.w); });
     var ul = card.querySelector('ul'); ul.textContent = '';
     var n = more ? list.length : Math.min(SHOW, list.length);
     for (var k = 0; k < n; k++) {
       var i = list[k], li = el('li'), a = el('a'); a.href = i.l; a.target = '_blank'; a.rel = 'noopener noreferrer';
       var ko = koOf(i); a.appendChild(el('div', 'tt', ko || i.t)); if (ko) a.appendChild(el('div', 'og', '원문: ' + i.t));
-      var m = el('div', 'mt'); var b = el('span', 'bd' + (i.w ? ' w' : ''), (i.w ? '★ ' : '') + SRC[i.s].n + (koOf(i) ? ' · 자동번역' : '')); m.appendChild(b);
+      var m = el('div', 'mt'); var b = el('span', 'bd' + (i.w ? ' w' : ''), (i.w ? '★ ' : '') + (i.s === 'stk' && i.tk ? '📌 ' + i.tk : SRC[i.s].n) + (koOf(i) ? ' · 자동번역' : '')); m.appendChild(b);
       m.appendChild(document.createTextNode((i.co ? i.co + ' · ' : '') + kst(i.d) + ' (한국시간)'));
       a.appendChild(m); li.appendChild(a); ul.appendChild(li);
     }
-    if (!list.length) ul.appendChild(el('li', 'mt', '이 구분에는 아직 올라온 발표가 없어요.'));
+    if (!list.length) ul.appendChild(el('li', 'mt', filter === 'stk' ? '지금 봇 종목 중 키워드에 걸린 새 기사가 없어요.' : '이 구분에는 아직 올라온 발표가 없어요.'));
     pump(list.slice(0, n));
     var mr = card.querySelector('.mr'); mr.style.display = list.length > SHOW ? '' : 'none'; mr.textContent = more ? '접기' : '더 보기 (' + (list.length - SHOW) + '건)';
     [].forEach.call(card.querySelectorAll('.nc button'), function (b) { b.classList.toggle('on', b.dataset.f === filter); });
@@ -64,16 +64,16 @@
   function build(j) {
     css();
     card = el('div', 'card'); card.id = 'wbNews';
-    var h = el('div', 'nh'); h.appendChild(el('h2', null, '📰 공식 발표 모음')); card.appendChild(h);
+    var h = el('div', 'nh'); h.appendChild(el('h2', null, '📰 이슈 뉴스 · 공식 발표')); card.appendChild(h);
     var nc = el('div', 'nc');
-    [['all', '전체'], ['us', '🇺🇸 미국(Fed·SEC)'], ['kr', '🇰🇷 한국 공시'], ['watch', '★ 삼성전자·SK하이닉스']].forEach(function (x) {
+    [['stk', '📌 봇 종목 이슈'], ['all', '전체'], ['us', '🇺🇸 Fed·SEC'], ['kr', '🇰🇷 한국 공시'], ['watch', '★ 삼성전자·SK하이닉스']].forEach(function (x) {
       var b = el('button', null, x[1]); b.type = 'button'; b.dataset.f = x[0];
       b.addEventListener('click', function () { filter = x[0]; more = false; render(); }); nc.appendChild(b);
     });
     card.appendChild(nc); card.appendChild(el('ul'));
     var mr = el('button', 'mr'); mr.type = 'button'; mr.addEventListener('click', function () { more = !more; render(); }); card.appendChild(mr);
     meta = el('div', 'ft'); card.appendChild(meta);
-    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 구글 번역으로 자동번역해 보여 주고(번역이 안 되면 영어로 나와요) 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
+    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '📌 봇 종목 이슈는 저점매수신호봇의 신호·근접·핫 종목 중 실적·가이던스·등급 변경·급등락·인수합병·소송·규제 같은 단어가 제목에 든 기사만 Yahoo Finance에서 추려 링크로 연결해요(키워드 거름망이라 중요도 판단은 아니에요). 연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 구글 번역으로 자동번역해 보여 주고(번역이 안 되면 영어로 나와요) 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
     if (!isNaN(upd)) txt += ' 마지막 수집 ' + kst(j.updated) + (hrs > 6 ? ' ⚠ 수집이 늦어지고 있어요.' : '') + '.';
     meta.textContent = txt;
     var anchor = document.getElementById('wbChg') || document.getElementById('sigs') || document.getElementById('brief');
@@ -87,7 +87,7 @@
     fetch('news.json' + q, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).then(function (j) {
       if (!j || !Array.isArray(j.items)) return;
       all = j.items.filter(function (i) { return i && SRC[i.s] && i.t && i.l && i.d && okLink(i); });
-      if (!all.length) return; build(j);
+      if (!all.length) return; if (all.some(function (i) { return i.s === 'stk'; })) filter = 'stk'; build(j);
     }).catch(function () {});
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
