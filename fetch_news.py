@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """공식 기관 RSS(Fed·SEC·DART) → news.json (링크만, 요약·해석 없음). 표준 라이브러리만 사용."""
-import json, os, re, sys, time, urllib.parse, urllib.request, xml.etree.ElementTree as ET
+import json, os, re, sys, time, urllib.error, urllib.parse, urllib.request, xml.etree.ElementTree as ET
 from datetime import datetime, timezone
 from email.utils import parsedate_to_datetime
 
@@ -87,9 +87,9 @@ EXTRA = [
     ('usj', 'MarketWatch', 'https://feeds.content.dowjones.io/public/rss/mw_topstories', r'(^|\.)marketwatch\.com$', 8),
     ('usj', 'Yahoo Finance', 'https://news.google.com/rss/search?q=when:1d+site:finance.yahoo.com&hl=en-US&gl=US&ceid=US:en', r'^news\.google\.com$', 6),
     ('usj', 'WSJ·Bloomberg·Reuters', 'https://news.google.com/rss/search?q=when:1d+(site:wsj.com+OR+site:bloomberg.com+OR+site:reuters.com)+stocks&hl=en-US&gl=US&ceid=US:en', r'^news\.google\.com$', 10),
-    ('rd', 'r/wallstreetbets', 'https://www.reddit.com/r/wallstreetbets/top/.rss?t=day', r'(^|\.)reddit\.com$', 8),
-    ('rd', 'r/stocks', 'https://www.reddit.com/r/stocks/top/.rss?t=day', r'(^|\.)reddit\.com$', 8),
-    ('rd', 'r/investing', 'https://www.reddit.com/r/investing/top/.rss?t=day', r'(^|\.)reddit\.com$', 6),
+    ('rd', 'r/wallstreetbets', 'https://www.reddit.com/r/wallstreetbets/top.rss?t=day', r'(^|\.)reddit\.com$', 8),
+    ('rd', 'r/stocks', 'https://www.reddit.com/r/stocks/top.rss?t=day', r'(^|\.)reddit\.com$', 8),
+    ('rd', 'r/investing', 'https://www.reddit.com/r/investing/top.rss?t=day', r'(^|\.)reddit\.com$', 6),
     ('krj', '한국경제', 'https://www.hankyung.com/feed/finance', r'(^|\.)hankyung\.com$', 8),
     ('krj', '매일경제', 'https://www.mk.co.kr/rss/50200011/', r'(^|\.)mk\.co\.kr$', 8),
     ('krj', '연합뉴스', 'https://www.yna.co.kr/rss/economy.xml', r'(^|\.)yna\.co\.kr$', 8),
@@ -113,8 +113,14 @@ def get_url(url, fxname):
         p = os.path.join(FX, fxname + '.xml')
         if not os.path.exists(p): raise IOError('no fixture ' + fxname)
         with open(p, 'rb') as f: return f.read()
+    url = urllib.parse.quote(url, safe=":/?&=+()%@,.-_~")
     req = urllib.request.Request(url, headers={'User-Agent': UA_B, 'Accept': 'application/rss+xml, application/atom+xml, application/xml, text/xml'})
-    with urllib.request.urlopen(req, timeout=20) as r: return r.read()
+    for k in range(2):
+        try:
+            with urllib.request.urlopen(req, timeout=20) as r: return r.read()
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and k == 0 and 'reddit.com' in url: time.sleep(6); continue
+            raise
 
 def iso_any(s):
     t = iso(s)
