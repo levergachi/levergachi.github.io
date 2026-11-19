@@ -68,7 +68,7 @@
     card = el('div', 'card'); card.id = 'wbNews';
     var h = el('div', 'nh'); h.appendChild(el('h2', null, '📰 이슈 뉴스 · 공식 발표')); card.appendChild(h);
     var nc = el('div', 'nc');
-    [['stk', '📌 봇 종목'], ['usj', '🇺🇸 미국 언론'], ['krj', '🇰🇷 국내 언론'], ['rd', '💬 레딧'], ['off', '🏛 공식·공시'], ['all', '전체']].forEach(function (x) {
+    [['stk', '📌 봇 종목'], ['usj', '🇺🇸 미국 언론'], ['krj', '🇰🇷 국내 언론'], ['rd', '💬 레딧'], ['off', '🏛 공식·공시'], ['all', '전체']].filter(function (x) { return x[0] === 'stk' || x[0] === 'all' || all.some(function (i) { return GRP(i) === x[0]; }); }).forEach(function (x) {
       var b = el('button', null, x[1]); b.type = 'button'; b.dataset.f = x[0];
       b.addEventListener('click', function () { filter = x[0]; more = false; render(); }); nc.appendChild(b);
     });
