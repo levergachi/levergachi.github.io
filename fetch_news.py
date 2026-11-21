@@ -13,8 +13,8 @@ FEEDS = {
     'dart': 'https://dart.fss.or.kr/api/todayRSS.xml',
 }
 OKHOST = {'fed': 'www.federalreserve.gov', 'sec': 'www.sec.gov', 'dart': 'dart.fss.or.kr'}
-KEEP_DAYS = {'fed': 60, 'sec': 60, 'dart': 14, 'stk': 4, 'usj': 3, 'krj': 3, 'krn': 4, 'rd': 2}
-CAP = {'fed': 40, 'sec': 40, 'dart': 80, 'stk': 60, 'usj': 40, 'krj': 40, 'krn': 40, 'rd': 30}
+KEEP_DAYS = {'fed': 60, 'sec': 60, 'dart': 14, 'stk': 4, 'usj': 3, 'krj': 3, 'krn': 4, 'rd': 2, 'st': 2}
+CAP = {'fed': 40, 'sec': 40, 'dart': 80, 'stk': 60, 'usj': 40, 'krj': 40, 'krn': 40, 'rd': 30, 'st': 30}
 WATCH = ['삼성전자', 'SK하이닉스']
 KW = re.compile(r'영업\(잠정\)실적|영업실적|유상증자|무상증자|자기주식|합병|분할|배당|단일판매|공급계약|감자|상장폐지|거래정지|횡령|배임|불성실|투자판단관련')
 
@@ -145,6 +145,29 @@ def kr_names():
                 if nm: out[x['t']] = nm
     return out
 
+BAD = re.compile(r'fuck|shit|bitch|retard|nigg|faggot|stupid|idiot|scam|pump|dump|rug|moon\b|puts? on|calls? on|[\U0001F300-\U0001FAFF]{3,}', re.I)
+
+def stocktwits(tk):
+    """종목 커뮤니티: 최근 글 중 좋아요 많은 순 상위 1건(품질·욕설 거름)."""
+    if FX:
+        p = os.path.join(FX, 'st_' + tk + '.json')
+        if not os.path.exists(p): return []
+        raw = open(p, 'rb').read()
+    else:
+        req = urllib.request.Request('https://api.stocktwits.com/api/2/streams/symbol/' + urllib.parse.quote(tk) + '.json', headers={'User-Agent': UA_B, 'Accept': 'application/json'})
+        with urllib.request.urlopen(req, timeout=20) as r: raw = r.read()
+    out = []
+    for m in json.loads(raw).get('messages', []):
+        body = clean(m.get('body') or ''); user = (m.get('user') or {}).get('username') or ''
+        likes = ((m.get('likes') or {}).get('total')) or 0
+        t = iso_any(m.get('created_at') or '')
+        if not (body and user and t and m.get('id')): continue
+        if likes < 2 or not (25 <= len(body) <= 280) or BAD.search(body) or body.count('$') > 4 or 'http' in body: continue
+        if not re.fullmatch(r'[A-Za-z0-9_.-]+', user): continue
+        out.append((likes, body, 'https://stocktwits.com/' + user + '/message/' + str(m['id']), t, user))
+    out.sort(key=lambda x: -x[0])
+    return out[:1]
+
 def clean(s): return re.sub(r'\s+', ' ', s).strip()
 
 def dart_item(title):
@@ -183,13 +206,14 @@ def main():
         except Exception as e:
             ok[src] = False
             print('FAIL', src, type(e).__name__, str(e)[:120], file=sys.stderr)
-    def add_feed(src, label, url, fxname, hostre, cap, tk=None, co=None):
+    def add_feed(src, label, url, fxname, hostre, cap, tk=None, co=None, need=None):
         got = 0
         for title, link, pub, srcname in parse_any(get_url(url, fxname)):
             t = iso_any(pub); title = clean(title)
             if not (title and link and t): continue
             m = re.match(r'^https://([^/]+)/', link)
             if not (m and re.search(hostre, m.group(1))): continue
+            if need and not re.search(need, link): continue
             if got >= cap: break
             media = srcname or label
             if src in ('usj', 'krj', 'krn') and ' - ' in title and not srcname:
@@ -219,6 +243,19 @@ def main():
     tks = bot_tickers(); sgot = 0; sfail = 0
     for tk, nm in tks.items():
         try:
+            n = add_feed('stk', 'Seeking Alpha', 'https://seekingalpha.com/api/sa/combined/' + urllib.parse.quote(tk) + '.xml', 'sa_' + tk, r'(^|\.)seekingalpha\.com$', 2, tk=tk, co=nm, need=r'/(article|news)/')
+            ok['sa'] = ok.get('sa', False) or n > 0
+        except Exception as e:
+            ok.setdefault('sa', False); print('FAIL sa', tk, type(e).__name__, str(e)[:60], file=sys.stderr)
+        try:
+            for likes, body, link, t, user in stocktwits(tk):
+                items[link] = {'s': 'st', 't': body, 'l': link, 'd': t, 'tk': tk, 'co': nm, 'pub': 'StockTwits @' + user + ' ♥' + str(likes)}
+            ok['st'] = True
+        except Exception as e:
+            ok.setdefault('st', False); print('FAIL st', tk, type(e).__name__, str(e)[:60], file=sys.stderr)
+        time.sleep(0.5)
+    for tk, nm in tks.items():
+        try:
             n = 0
             for title, link, pub in parse(get_stk(tk)):
                 t = iso(pub); title = clean(title)
@@ -236,11 +273,11 @@ def main():
     if tks: ok['stk'] = sgot > 0 or sfail < len(tks)
     now = datetime.now(timezone.utc)
     out = []
-    for src in list(FEEDS) + ['stk', 'usj', 'krj', 'krn', 'rd']:
+    for src in list(FEEDS) + ['stk', 'usj', 'krj', 'krn', 'rd', 'st']:
         lst = [i for i in items.values() if i['s'] == src]
         lst = [i for i in lst if (now - datetime.strptime(i['d'], '%Y-%m-%dT%H:%M:%SZ').replace(tzinfo=timezone.utc)).days <= KEEP_DAYS[src]]
         if src == 'krn': lst = [i for i in lst if i.get('tk') in kr_names()] if kr_names() else lst
-        if src == 'stk' and tks: lst = [i for i in lst if i.get('tk') in tks]
+        if src in ('stk', 'st') and tks: lst = [i for i in lst if i.get('tk') in tks]
         lst.sort(key=lambda i: i['d'], reverse=True)
         out += lst[:CAP[src]]
     out.sort(key=lambda i: i['d'], reverse=True)

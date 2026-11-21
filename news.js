@@ -3,9 +3,9 @@
 (function () {
   'use strict';
   if (window.__wbNews) return; window.__wbNews = 1;
-  var SRC = { fed: { n: '연준(Fed)', f: 'us' }, sec: { n: 'SEC', f: 'us' }, dart: { n: 'DART 공시', f: 'kr' }, stk: { n: '봇 종목', f: 'us', g: 'stk', tr: 1 }, usj: { n: '미국 언론', f: 'us', g: 'usj', tr: 1 }, rd: { n: '레딧', f: 'us', g: 'rd', tr: 1 }, krj: { n: '국내 언론', f: 'kr', g: 'krj' }, krn: { n: '봇 종목', f: 'kr', g: 'stk' } };
+  var SRC = { fed: { n: '연준(Fed)', f: 'us' }, sec: { n: 'SEC', f: 'us' }, dart: { n: 'DART 공시', f: 'kr' }, stk: { n: '봇 종목', f: 'us', g: 'stk', tr: 1 }, usj: { n: '미국 언론', f: 'us', g: 'usj', tr: 1 }, rd: { n: '레딧', f: 'us', g: 'rd', tr: 1 }, krj: { n: '국내 언론', f: 'kr', g: 'krj' }, krn: { n: '봇 종목', f: 'kr', g: 'stk' }, st: { n: '커뮤니티', f: 'us', g: 'st', tr: 1 } };
   var GRP = function (i) { return SRC[i.s].g || 'off'; };
-  var HOSTRE = { stk: /(^|\.)yahoo\.com$/, usj: /(^|\.)(cnbc|marketwatch|wsj|bloomberg|reuters|yahoo)\.com$|^news\.google\.com$/, rd: /(^|\.)reddit\.com$/, krj: /(^|\.)(hankyung\.com|mk\.co\.kr|yna\.co\.kr)$|^news\.google\.com$/, krn: /^news\.google\.com$/ };
+  var HOSTRE = { stk: /(^|\.)(yahoo|seekingalpha)\.com$/, st: /(^|\.)stocktwits\.com$/, usj: /(^|\.)(cnbc|marketwatch|wsj|bloomberg|reuters|yahoo)\.com$|^news\.google\.com$/, rd: /(^|\.)reddit\.com$/, krj: /(^|\.)(hankyung\.com|mk\.co\.kr|yna\.co\.kr)$|^news\.google\.com$/, krn: /^news\.google\.com$/ };
   var HOST = { fed: 'www.federalreserve.gov', sec: 'www.sec.gov', dart: 'dart.fss.or.kr' };
   var SHOW = 8, filter = 'all', all = [], more = false, card, meta, CK = 'lgnk1', KO = {}, trFail = false, trBusy = false, rtm = 0;
   try { KO = JSON.parse(localStorage.getItem(CK) || '{}') || {}; if (typeof KO !== 'object') KO = {}; } catch (e) { KO = {}; }
@@ -68,14 +68,14 @@
     card = el('div', 'card'); card.id = 'wbNews';
     var h = el('div', 'nh'); h.appendChild(el('h2', null, '📰 이슈 뉴스 · 공식 발표')); card.appendChild(h);
     var nc = el('div', 'nc');
-    [['stk', '📌 봇 종목'], ['usj', '🇺🇸 미국 언론'], ['krj', '🇰🇷 국내 언론'], ['rd', '💬 레딧'], ['off', '🏛 공식·공시'], ['all', '전체']].filter(function (x) { return x[0] === 'stk' || x[0] === 'all' || all.some(function (i) { return GRP(i) === x[0]; }); }).forEach(function (x) {
+    [['stk', '📌 봇 종목'], ['usj', '🇺🇸 미국 언론'], ['krj', '🇰🇷 국내 언론'], ['st', '💬 종목 커뮤니티'], ['rd', '💬 레딧'], ['off', '🏛 공식·공시'], ['all', '전체']].filter(function (x) { return x[0] === 'stk' || x[0] === 'all' || all.some(function (i) { return GRP(i) === x[0]; }); }).forEach(function (x) {
       var b = el('button', null, x[1]); b.type = 'button'; b.dataset.f = x[0];
       b.addEventListener('click', function () { filter = x[0]; more = false; render(); }); nc.appendChild(b);
     });
     card.appendChild(nc); card.appendChild(el('ul'));
     var mr = el('button', 'mr'); mr.type = 'button'; mr.addEventListener('click', function () { more = !more; render(); }); card.appendChild(mr);
     meta = el('div', 'ft'); card.appendChild(meta);
-    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '미국·국내 언론(CNBC·MarketWatch·WSJ·Bloomberg·Reuters·한경·매경·연합 등)과 레딧 인기글은 제목과 원문 링크만 모아요. 네이버·다음 포털 뉴스는 공식 피드가 없어 구글뉴스 검색으로 대신해요. 📌 봇 종목 이슈는 저점매수신호봇의 신호·근접·핫 종목 중 실적·가이던스·등급 변경·급등락·인수합병·소송·규제 같은 단어가 제목에 든 기사만 Yahoo Finance에서 추려 링크로 연결해요(키워드 거름망이라 중요도 판단은 아니에요). 연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 구글 번역으로 자동번역해 보여 주고(번역이 안 되면 영어로 나와요) 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
+    var upd = new Date(j.updated), hrs = (Date.now() - upd) / 3600000, txt = '미국·국내 언론(CNBC·MarketWatch·WSJ·Bloomberg·Reuters·한경·매경·연합 등)과 레딧 인기글은 제목과 원문 링크만 모아요. 네이버·다음 포털 뉴스는 공식 피드가 없어 구글뉴스 검색으로 대신해요. 💬 종목 커뮤니티는 StockTwits에서 봇 종목마다 좋아요를 가장 많이 받은 글 1건만 보여주는 개인 의견이라 사실 확인이 안 된 글이에요. 📌 봇 종목 이슈에는 시킹알파 분석글 링크도 섞여 있어요. 📌 봇 종목 이슈는 저점매수신호봇의 신호·근접·핫 종목 중 실적·가이던스·등급 변경·급등락·인수합병·소송·규제 같은 단어가 제목에 든 기사만 Yahoo Finance에서 추려 링크로 연결해요(키워드 거름망이라 중요도 판단은 아니에요). 연준·SEC 보도자료와 DART 주요 공시(실적·증자·배당·합병 등)의 제목만 모아 원문 링크로 연결해요. 요약·해석은 하지 않고, 영어 제목은 구글 번역으로 자동번역해 보여 주고(번역이 안 되면 영어로 나와요) 틀릴 수 있어요. 원문 링크로 확인해 주세요.';
     if (!isNaN(upd)) txt += ' 마지막 수집 ' + kst(j.updated) + (hrs > 6 ? ' ⚠ 수집이 늦어지고 있어요.' : '') + '.';
     meta.textContent = txt;
     var anchor = document.getElementById('wbChg') || document.getElementById('sigs') || document.getElementById('brief');
